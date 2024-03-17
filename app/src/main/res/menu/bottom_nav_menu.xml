@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/itemHome"
+        android:icon="@drawable/home"
+        android:title="@string/home"
+        />
+    <item
+        android:id="@+id/itemDieta"
+        android:icon="@drawable/dieta"
+        android:title="@string/dieta"
+        />
+    <item
+        android:id="@+id/itemEntrenamiento"
+        android:icon="@drawable/mancuernas"
+        android:title="@string/entrenamiento"
+        />
+    <item
+        android:id="@+id/itemSocial"
+        android:icon="@drawable/reunion__1_"
+        android:title="@string/social"
+        />
+</menu>
