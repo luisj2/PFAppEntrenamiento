@@ -22,10 +22,12 @@
         tool:text="Pierna(Cuadriceps)"
         android:layout_weight="1"
         android:textSize="12sp"
-        android:gravity="center" />
+        android:gravity="center"
+        android:textAlignment="center"/>
 
 
     <Button
+        android:id="@+id/btnActivityMostrarRutinas"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_weight="0.5"
