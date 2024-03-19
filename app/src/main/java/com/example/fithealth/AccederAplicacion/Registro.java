@@ -66,12 +66,15 @@ public class Registro extends AppCompatActivity {
 
     }
 
+    //inicializar las variables del inicio
     private void inicializarVariables() {
         permisos = new Permisos();
         auth = FirebaseAuth.getInstance();
         fs = FirebaseFirestore.getInstance();
         helper = new FirebaseHelper(getApplicationContext());
     }
+
+    //inicializar los componentes
     public void enlazarComponentes() {
         editTxtNuevoNombre = findViewById(R.id.editTxtNuevoNombreUsuario);
         editTxtNuevaContrasenia = findViewById(R.id.editNuevoTxtContrasenia);
@@ -84,9 +87,10 @@ public class Registro extends AppCompatActivity {
         startActivity(i);
     }
 
-    //Insertar a un nuevo usuario en la base de datos
+    //Insertar a un nuevo usuario en Firestore
     public void registrarse(View view) {
 
+        //comprobamos que el usuario tenga conexion estable
         if(permisos.conexionEstable(getApplicationContext())){
             // Recuperamos los textos que ha introducido el usuario en los campos
             String nuevoNombre = editTxtNuevoNombre.getText().toString();
@@ -116,6 +120,7 @@ public class Registro extends AppCompatActivity {
                                     datosUsuario = document.getData();
 
 
+                                    //comprobamos si el document contiene el corrreo que han pasado por parametro
                                     if(datosUsuario.get("Correo").toString().equals(email)){
                                         Toast.makeText(this, "Ese correo ya existe", Toast.LENGTH_SHORT).show();
                                         usuarioExiste = true;
@@ -124,7 +129,7 @@ public class Registro extends AppCompatActivity {
 
                                 }
 
-                                if(!usuarioExiste){
+                                if(!usuarioExiste){ //el usuario no existe
                                     Usuario usuario = new Usuario(email, nuevoNombre, nuevaContrasenia);
 
                                     helper.registrarUsuario(usuario);
@@ -174,14 +179,6 @@ public class Registro extends AppCompatActivity {
     }
 
 
-    public HashMap<String, Object> rellenarHashMapConUsuario(Usuario usuario) {
-        HashMap<String, Object> datosUsuario = new HashMap<>();
 
-        datosUsuario.put("Correo", usuario.getEmail());
-        datosUsuario.put("NombreUsuario", usuario.getNombreUsario());
-        datosUsuario.put("Contrasenia", usuario.getContrasenia());
-
-        return datosUsuario;
-    }
 
 }
