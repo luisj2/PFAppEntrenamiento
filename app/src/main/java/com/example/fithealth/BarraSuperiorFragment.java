@@ -77,9 +77,10 @@ public class BarraSuperiorFragment extends Fragment {
             }
         });
 
-        txtViewNombreUsuario.setText(preferences.getString("nombreUsuario","Defecto"));
+       // txtViewNombreUsuario.setText();
 
 
         return view;
     }
+
 }

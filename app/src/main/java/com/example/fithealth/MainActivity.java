@@ -2,6 +2,7 @@ package com.example.fithealth;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
@@ -37,29 +38,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        enlazarElementos();
+            enlazarElementos();
 
 
+            //inicializamos las instacias de los fragments
+            home = new HomeFragment();
+            dieta = new DietaFragment();
+            entrenamiento = new EntrenamientoFragment();
+            social = new SocialFragment();
+
+            barraSuperior = new BarraSuperiorFragment(this.getApplicationContext());
+
+            //mostrar la barra superior
+            getSupportFragmentManager().beginTransaction().replace(R.id.barraArribaFragmentView,barraSuperior).commit();
+            //ponemos el fragment de home por defecto
+            setCurrentFragment(home);
 
 
-        //inicializamos las instacias de los fragments
-        home = new HomeFragment();
-        dieta = new DietaFragment();
-        entrenamiento = new EntrenamientoFragment();
-        social = new SocialFragment();
-
-        barraSuperior = new BarraSuperiorFragment(this.getApplicationContext());
-
-        //mostrar la barra superior
-        getSupportFragmentManager().beginTransaction().replace(R.id.barraArribaFragmentView,barraSuperior).commit();
-        //ponemos el fragment de home por defecto
-        setCurrentFragment(home);
-
-
-
-        //la funcionalidad para cambiar el fragment del contentView segun al boton de la
-        // barra de navegacion que de el usuario
-        funcionalidadNavegacion();
+            //la funcionalidad para cambiar el fragment del contentView segun al boton de la
+            // barra de navegacion que de el usuario
+            funcionalidadNavegacion();
     }
 
 

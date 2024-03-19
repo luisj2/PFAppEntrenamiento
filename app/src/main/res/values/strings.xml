@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">FitHealth</string>
-    <string name="usuario">Usuario</string>
     <string name="contrasenia">Contraseña</string>
     <string name="InicioSesion">Iniciar Sesion</string>
     <string name="Registrarse">Registrarse</string>
@@ -8,7 +7,6 @@
     <string name="NuevoUsuario">Nuevo Usuario</string>
     <string name="VolverInicioSesion">Volver al inicio de sesion</string>
     <string name="mantenerSeson">Mantener Sesion Iniciada</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="home">Home</string>
     <string name="dieta">Dieta</string>
