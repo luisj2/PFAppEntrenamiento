@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.example.fithealth.BaseDeDatos.Dao.DaoUsuario;
 import com.example.fithealth.BaseDeDatos.FitHealthDatabase;
 import com.example.fithealth.BaseDeDatos.TablaUsuarios;
+import com.example.fithealth.Firebase.FirebaseHelper;
 import com.example.fithealth.Permisos.Permisos;
 import com.example.fithealth.R;
 import com.example.fithealth.Usuario.DatosUsuario;
@@ -40,6 +41,8 @@ public class Registro extends AppCompatActivity {
 
     FirebaseAuth auth;
 
+    FirebaseHelper helper;
+
     Permisos permisos;
 
 
@@ -50,19 +53,25 @@ public class Registro extends AppCompatActivity {
 
 
         enlazarComponentes();
-        permisos = new Permisos();
+
+        inicializarVariables();
 
         //bbdd = FitHealthDatabase.getInstance(this.getApplicationContext()); //inicializar base de datos
         // daoUsuario= bbdd.daoUsuario(); //inicializar el dao usuario(necesario para modificar la base de datos)
 
         //tablaUsuarios = new TablaUsuarios(daoUsuario); //objeto con los metodos para modificar la tabla de usuarios
 
-
         FirebaseApp.initializeApp(Registro.this);
 
 
     }
 
+    private void inicializarVariables() {
+        permisos = new Permisos();
+        auth = FirebaseAuth.getInstance();
+        fs = FirebaseFirestore.getInstance();
+        helper = new FirebaseHelper(getApplicationContext());
+    }
     public void enlazarComponentes() {
         editTxtNuevoNombre = findViewById(R.id.editTxtNuevoNombreUsuario);
         editTxtNuevaContrasenia = findViewById(R.id.editNuevoTxtContrasenia);
@@ -84,13 +93,7 @@ public class Registro extends AppCompatActivity {
             String nuevaContrasenia = editTxtNuevaContrasenia.getText().toString();
             String email = editTxtNuevoCorreo.getText().toString();
 
-            //Map<String,Object> datosUsuario = new HashMap<>();
 
-
-
-            fs = FirebaseFirestore.getInstance();
-
-            //auth = FirebaseAuth.getInstance();
 
             // Si no están vacíos, entra al if
             if (!nuevoNombre.isEmpty() && !nuevaContrasenia.isEmpty() && !email.isEmpty()) { //¿campos vacios?
@@ -116,13 +119,15 @@ public class Registro extends AppCompatActivity {
                                     if(datosUsuario.get("Correo").toString().equals(email)){
                                         Toast.makeText(this, "Ese correo ya existe", Toast.LENGTH_SHORT).show();
                                         usuarioExiste = true;
+                                        break;
                                     }
 
                                 }
 
                                 if(!usuarioExiste){
                                     Usuario usuario = new Usuario(email, nuevoNombre, nuevaContrasenia);
-                                    registrarNuevoUsuario(usuario);
+
+                                    helper.registrarUsuario(usuario);
                                 }
                             }else{
                                 Log.e("FirebaseError","Error al cargar los datos de fierebase");
@@ -150,20 +155,7 @@ public class Registro extends AppCompatActivity {
 
     }
 
-    public void registrarNuevoUsuario(Usuario usuario) {
 
-        HashMap<String, Object> datosUsuario = rellenarHashMapConUsuario(usuario);
-
-        fs.collection("usuarios").document(usuario.getEmail()).set(datosUsuario).addOnSuccessListener(aVoid -> {
-                    // Éxito en la operación
-                    Toast.makeText(this, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    // Manejar el error
-                    Toast.makeText(this, "Error al registrar usuario", Toast.LENGTH_SHORT).show();
-                });
-        ;
-    }
 
 
     public boolean esEmailValido(String email) {
