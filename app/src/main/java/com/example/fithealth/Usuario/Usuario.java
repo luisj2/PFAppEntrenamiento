@@ -3,9 +3,13 @@ package com.example.fithealth.Usuario;
 public class Usuario {
 
     private String id;
+
+    String nombreUnico;
     private String email;
     private String nombreUsario;
     private String contrasenia;
+
+    private String hastagIdentificativo;
 
 
 
@@ -53,8 +57,24 @@ public class Usuario {
         return id;
     }
 
+    public String getHastagIdentificativo() {
+        return hastagIdentificativo;
+    }
+
+    public void setHastagIdentificativo(String hastagIdentificativo) {
+        this.hastagIdentificativo = hastagIdentificativo;
+    }
+
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getNombreUnico() {
+        return nombreUnico;
+    }
+
+    public void setNombreUnico(String nombreUnico) {
+        this.nombreUnico = nombreUnico;
     }
 
     @Override

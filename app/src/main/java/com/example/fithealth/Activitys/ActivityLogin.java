@@ -1,20 +1,21 @@
-package com.example.fithealth;
+package com.example.fithealth.Activitys;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.fithealth.BarraSuperiorFragment;
 import com.example.fithealth.PantallasPrincipales.principales.Dieta.DietaFragment;
 import com.example.fithealth.PantallasPrincipales.principales.Entrenamiento.EntrenamientoFragment;
 import com.example.fithealth.PantallasPrincipales.principales.Home.HomeFragment;
 import com.example.fithealth.PantallasPrincipales.principales.Social.SocialFragment;
+import com.example.fithealth.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
+public class ActivityLogin extends AppCompatActivity {
 
 
     //instacias de los fragment principales
@@ -42,12 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             //inicializamos las instacias de los fragments
-            home = new HomeFragment();
-            dieta = new DietaFragment();
-            entrenamiento = new EntrenamientoFragment();
-            social = new SocialFragment();
-
-            barraSuperior = new BarraSuperiorFragment(this.getApplicationContext());
+           inicializarComponentes();
 
             //mostrar la barra superior
             getSupportFragmentManager().beginTransaction().replace(R.id.barraArribaFragmentView,barraSuperior).commit();
@@ -60,7 +56,14 @@ public class MainActivity extends AppCompatActivity {
             funcionalidadNavegacion();
     }
 
+    private void inicializarComponentes() {
+        home = new HomeFragment();
+        dieta = new DietaFragment();
+        entrenamiento = new EntrenamientoFragment();
+        social = new SocialFragment();
 
+        barraSuperior = new BarraSuperiorFragment(this.getApplicationContext());
+    }
 
 
     public void enlazarElementos(){

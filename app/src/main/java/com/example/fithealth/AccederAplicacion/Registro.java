@@ -101,8 +101,8 @@ public class Registro extends AppCompatActivity {
 
             // Si no están vacíos, entra al if
             if (!nuevoNombre.isEmpty() && !nuevaContrasenia.isEmpty() && !email.isEmpty()) { //¿campos vacios?
-                if (esEmailValido(email)) { //comprobacion de correo
-                    if (esUsuarioValido(nuevoNombre)) { //comprobacion de nombre de usuario
+                if (helper.credencialesCorreoValidas(email)) { //comprobacion de correo
+                    if (helper.credencialesUsuarioValidas(nuevoNombre)) { //comprobacion de nombre de usuario
 
                         //hacemos una consulta a los datos: con el get accedemos a los decumentos de la coleccion
                         //y con el addoncompleteListener maneja los datos recibidos y con el objeto task tratar con ellos
@@ -163,20 +163,10 @@ public class Registro extends AppCompatActivity {
 
 
 
-    public boolean esEmailValido(String email) {
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-        Pattern pattern = Pattern.compile(emailRegex);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
-    }
+
 
     // Método para validar un nombre de usuario normal (permite letras, números y guiones bajos)
-    public boolean esUsuarioValido(String nombreUsuario) {
-        String usernameRegex = "^[a-zA-Z0-9_]+$";
-        Pattern pattern = Pattern.compile(usernameRegex);
-        Matcher matcher = pattern.matcher(nombreUsuario);
-        return matcher.matches();
-    }
+
 
 
 

@@ -14,10 +14,11 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.fithealth.Activitys.AjustesActivity;
 
 
 public class BarraSuperiorFragment extends Fragment {
@@ -54,33 +55,51 @@ public class BarraSuperiorFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_barra_superior,container,false);
 
-        txtViewNombreUsuario = view.findViewById(R.id.txtViewNombreUsuario);
 
-        buttonImagenPerfil = view.findViewById(R.id.buttonPerfil);
-        
-        botonAjustes = view.findViewById(R.id.buttonAjustes);
-        
+        View view = inflarVista(inflater, container);
 
+        enlazarComponentes(view);
+
+
+        //listener del boton de la imagen de perfil
+        funcionalidadImagenPerfil();
+
+        //listener del boton de ajuestes
+        funcionalidadBtnAjuestes();
+
+        // txtViewNombreUsuario.setText();
+        return view;
+    }
+
+    private void funcionalidadBtnAjuestes() {
+        botonAjustes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, AjustesActivity.class));
+            }
+        });
+    }
+
+    private void funcionalidadImagenPerfil() {
         buttonImagenPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(context, "Hola", Toast.LENGTH_SHORT).show();
             }
         });
-        
-        botonAjustes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               startActivity(new Intent(context,AjustesActivity.class));
-            }
-        });
+    }
 
-       // txtViewNombreUsuario.setText();
+    private View inflarVista(LayoutInflater inflater,ViewGroup container) {
+        return inflater.inflate(R.layout.fragment_barra_superior,container,false);
+    }
 
+    private void enlazarComponentes(View view) {
+        txtViewNombreUsuario = view.findViewById(R.id.txtViewNombreUsuario);
 
-        return view;
+        buttonImagenPerfil = view.findViewById(R.id.buttonPerfil);
+
+        botonAjustes = view.findViewById(R.id.buttonAjustes);
     }
 
 }

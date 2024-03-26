@@ -1,4 +1,4 @@
-package com.example.fithealth.AdapterRutinas;
+package com.example.fithealth.Rutinas;
 
 import android.content.Context;
 import android.util.Log;
@@ -29,11 +29,16 @@ public class AdapterRutina extends RecyclerView.Adapter<ViewHolderRutina> {
     @NonNull
     @Override
     public ViewHolderRutina onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
-        View view = inflater.inflate(R.layout.rutina_items,parent,false);
+
+        View view = inflarVista(R.layout.rutina_items,parent);
 
         return new ViewHolderRutina(view);
+    }
+
+    private View inflarVista(int rutinaItems, ViewGroup parent) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        return inflater.inflate(rutinaItems,parent,false);
     }
 
     //hacemos la funcionalidad de nuestro recyclerview en este caso cambiando el textview que tenemos en el layour al nombre de la

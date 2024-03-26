@@ -1,4 +1,4 @@
-package com.example.fithealth;
+package com.example.fithealth.Activitys;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.fithealth.AccederAplicacion.InicioSesion;
+import com.example.fithealth.R;
 
 public class AjustesActivity extends AppCompatActivity {
 
@@ -28,12 +29,20 @@ public class AjustesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ajustes);
 
         enlazarComponentes();
+
+        inicializarVariables();
+
+        funcionalidadCerrarSesion();
+    }
+
+    private void inicializarVariables() {
         preferences = getSharedPreferences("DatosInicio", MODE_PRIVATE);
         editor = preferences.edit();
 
         context = this.getApplicationContext();
+    }
 
-
+    private void funcionalidadCerrarSesion() {
         btnCerrarSesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

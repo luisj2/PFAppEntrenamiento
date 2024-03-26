@@ -1,4 +1,4 @@
-package com.example.fithealth.AdapterRutinas;
+package com.example.fithealth.Rutinas;
 
 import android.util.Log;
 import android.view.View;
@@ -16,9 +16,13 @@ public class ViewHolderRutina extends RecyclerView.ViewHolder {
     private Button button;
     public ViewHolderRutina(@NonNull View itemView) {
         super(itemView);
+        enlazarComponentes(itemView);
+        funcionalidadButton();
+    }
+
+    private void enlazarComponentes(View itemView) {
         tvNombreRutina = itemView.findViewById(R.id.tvRutina);
         button = itemView.findViewById(R.id.btnActivityMostrarRutinas);
-        funcionalidadButton();
     }
 
     private void funcionalidadButton() {
@@ -29,6 +33,8 @@ public class ViewHolderRutina extends RecyclerView.ViewHolder {
             }
         });
     }
+
+    //metodo para cambiar el textview desde el onBindViewHolder del adaptador
 
     public void cambiarTextViewRutina(String nombreRutina){
         tvNombreRutina.setText(nombreRutina);

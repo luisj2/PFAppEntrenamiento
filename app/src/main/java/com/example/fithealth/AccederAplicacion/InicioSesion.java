@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -16,13 +15,10 @@ import com.example.fithealth.BaseDeDatos.Dao.DaoUsuario;
 import com.example.fithealth.BaseDeDatos.FitHealthDatabase;
 import com.example.fithealth.BaseDeDatos.TablaUsuarios;
 import com.example.fithealth.Firebase.FirebaseHelper;
-import com.example.fithealth.MainActivity;
+import com.example.fithealth.Activitys.ActivityLogin;
 import com.example.fithealth.Permisos.Permisos;
 import com.example.fithealth.R;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class InicioSesion extends AppCompatActivity {
 
@@ -119,7 +115,7 @@ public class InicioSesion extends AppCompatActivity {
 
     }
     public void moverseAMain(){
-        Intent i = new Intent(this.getApplicationContext(), MainActivity.class);
+        Intent i = new Intent(this.getApplicationContext(), ActivityLogin.class);
         startActivity(i);
     }
     public void iniciarSesion(View view) {
@@ -131,7 +127,12 @@ public class InicioSesion extends AppCompatActivity {
 
            //comprobamos que todos los campos esten rellenados
             if(!correoElectronico.isEmpty() && !contrasenia.isEmpty()){
-                helper.iniciarSesion(correoElectronico,contrasenia);
+
+                if(helper.credencialesCorreoValidas(correoElectronico)){
+                    helper.iniciarSesion(correoElectronico,contrasenia);
+                }else{
+                    Toast.makeText(this, "Credenciales del correo invalidas", Toast.LENGTH_SHORT).show();
+                }
             }else{ //campos no rellenos
                 Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_SHORT).show();
             }
@@ -141,7 +142,11 @@ public class InicioSesion extends AppCompatActivity {
         }
 
 
+
+
     }
+
+
 
 
 

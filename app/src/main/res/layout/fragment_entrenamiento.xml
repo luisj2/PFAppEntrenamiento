@@ -20,8 +20,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
     <Button
-        android:id="@+id/btnCrearEntrenamiento"
-        android:layout_width="wrap_content"
+        android:id="@+id/btnCrearRutina"
+        android:layout_width="0dp"
         android:layout_height="40dp"
         android:text=" + Rutina"
         android:textSize="16dp"
@@ -30,10 +30,12 @@
         android:backgroundTint="@color/azulBotones"
         android:radius="20dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tituloEntrenamiento"
+        app:layout_constraintStart_toEndOf="@+id/btnCrearEjercicio"/>
 
     <Button
-        android:layout_width="wrap_content"
+        android:id="@+id/btnCrearEjercicio"
+        android:layout_width="0dp"
         android:layout_height="40dp"
         android:text="+ Ejercicio"
         android:textSize="16dp"
@@ -42,7 +44,10 @@
         android:backgroundTint="@color/azulBotones"
         android:radius="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tituloEntrenamiento"
+        app:layout_constraintBottom_toTopOf="@+id/tituloRutinasCreadas"
+        app:layout_constraintEnd_toStartOf="@+id/btnCrearRutina"/>
+
 
     <TextView
         android:id="@+id/tituloRutinasCreadas"
@@ -54,7 +59,7 @@
         android:text="Tus Rutinas"
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@+id/tituloEntrenamiento"
-        android:layout_marginTop="35dp"/>
+        android:layout_marginTop="68dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvListaRutinas"
