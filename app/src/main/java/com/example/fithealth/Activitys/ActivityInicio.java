@@ -4,8 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -30,11 +34,26 @@ public class ActivityInicio extends AppCompatActivity {
 
         enlazarComponentes();
 
+        cambiarColorFuenteTV();
+
         inicializarAnimaciones();
 
         enlazarAnimaciones();
 
         cambiarActivityConDelay();
+
+    }
+
+
+    private void cambiarColorFuenteTV() {
+        String primeraParte = "Fit";
+        String segundaParte = "Health";
+
+        Spannable spannable = new SpannableString(primeraParte+segundaParte);
+
+        spannable.setSpan(new ForegroundColorSpan(Color.BLACK),0,primeraParte.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        tvNombre.setText(spannable);
 
     }
 
@@ -52,7 +71,7 @@ public class ActivityInicio extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(getApplicationContext(), ActivityLogin.class));
+                startActivity(new Intent(getApplicationContext(), ActivityPrincipal.class));
             }
         },1600);
     }

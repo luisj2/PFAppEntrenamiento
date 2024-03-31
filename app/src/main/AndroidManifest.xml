@@ -7,7 +7,6 @@
         android:name="android.permission.INTERNET"
         android:required="true" />
 
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -19,12 +18,15 @@
         android:theme="@style/Theme.FitHealth"
         tools:targetApi="31">
         <activity
+            android:name=".CrearEjercicioActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activitys.AjustesActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".Activitys.ActivityLogin"
+            android:name=".Activitys.ActivityPrincipal"
             android:exported="false"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
@@ -37,27 +39,18 @@
             android:name=".AccederAplicacion.InicioSesion"
             android:exported="true"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity">
-
-        </activity>
-
+            tools:ignore="LockedOrientationActivity"></activity>
         <activity
             android:name=".Activitys.ActivityInicio"
             android:exported="true"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-
-
-
-
     </application>
 
 </manifest>

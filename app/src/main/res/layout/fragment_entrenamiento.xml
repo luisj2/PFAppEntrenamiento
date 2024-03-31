@@ -19,47 +19,48 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
     <Button
         android:id="@+id/btnCrearRutina"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:text=" + Rutina"
-        android:textSize="16dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginBottom="40dp"
         android:backgroundTint="@color/azulBotones"
         android:radius="20dp"
+        android:text=" + Rutina"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/tituloRutinasCreadas"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tituloEntrenamiento"
-        app:layout_constraintStart_toEndOf="@+id/btnCrearEjercicio"/>
+        app:layout_constraintStart_toEndOf="@+id/btnCrearEjercicio" />
 
     <Button
         android:id="@+id/btnCrearEjercicio"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:text="+ Ejercicio"
-        android:textSize="16dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginBottom="40dp"
         android:backgroundTint="@color/azulBotones"
         android:radius="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tituloEntrenamiento"
+        android:text="+ Ejercicio"
+        android:textSize="16dp"
         app:layout_constraintBottom_toTopOf="@+id/tituloRutinasCreadas"
-        app:layout_constraintEnd_toStartOf="@+id/btnCrearRutina"/>
+        app:layout_constraintEnd_toStartOf="@+id/btnCrearRutina"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <TextView
         android:id="@+id/tituloRutinasCreadas"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="40dp"
+        android:gravity="center"
+        android:text="Tus Rutinas"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/rvListaRutinas"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:textSize="16dp"
-        android:text="Tus Rutinas"
-        android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@+id/tituloEntrenamiento"
-        android:layout_marginTop="68dp"/>
+        app:layout_constraintTop_toBottomOf="@+id/tituloEntrenamiento" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvListaRutinas"

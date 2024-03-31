@@ -15,7 +15,7 @@ import com.example.fithealth.BaseDeDatos.Dao.DaoUsuario;
 import com.example.fithealth.BaseDeDatos.FitHealthDatabase;
 import com.example.fithealth.BaseDeDatos.TablaUsuarios;
 import com.example.fithealth.Firebase.FirebaseHelper;
-import com.example.fithealth.Activitys.ActivityLogin;
+import com.example.fithealth.Activitys.ActivityPrincipal;
 import com.example.fithealth.Permisos.Permisos;
 import com.example.fithealth.R;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,14 +35,8 @@ public class InicioSesion extends AppCompatActivity {
 
     Permisos permisos;
 
-
-
-
     SharedPreferences mantenerCuentaIniciada; //Comprobar si el usuario mantiene el inicio de sesion iniciado
     CheckBox boxMantenerCuentaIniciada;
-
-
-
 
     SharedPreferences.Editor editor; //editar lo que hadentro de la instacia de mantenerCuentaInicada de SharedPreferences
 
@@ -58,6 +52,7 @@ public class InicioSesion extends AppCompatActivity {
         enlazarComponentes();
 
         inicializarVariables();
+
         mantenerCuentaIniciada = getSharedPreferences("DatosInicio", MODE_PRIVATE);
 
         recuperarDatosPreferences();
@@ -115,7 +110,7 @@ public class InicioSesion extends AppCompatActivity {
 
     }
     public void moverseAMain(){
-        Intent i = new Intent(this.getApplicationContext(), ActivityLogin.class);
+        Intent i = new Intent(this.getApplicationContext(), ActivityPrincipal.class);
         startActivity(i);
     }
     public void iniciarSesion(View view) {
@@ -129,6 +124,7 @@ public class InicioSesion extends AppCompatActivity {
             if(!correoElectronico.isEmpty() && !contrasenia.isEmpty()){
 
                 if(helper.credencialesCorreoValidas(correoElectronico)){
+                    //Iniciamos sesion en Firebase
                     helper.iniciarSesion(correoElectronico,contrasenia);
                 }else{
                     Toast.makeText(this, "Credenciales del correo invalidas", Toast.LENGTH_SHORT).show();

@@ -3,10 +3,8 @@ package com.example.fithealth.Activitys;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-
 import android.os.Bundle;
 import android.view.MenuItem;
-
 import com.example.fithealth.BarraSuperiorFragment;
 import com.example.fithealth.PantallasPrincipales.principales.Dieta.DietaFragment;
 import com.example.fithealth.PantallasPrincipales.principales.Entrenamiento.EntrenamientoFragment;
@@ -15,7 +13,7 @@ import com.example.fithealth.PantallasPrincipales.principales.Social.SocialFragm
 import com.example.fithealth.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class ActivityLogin extends AppCompatActivity {
+public class ActivityPrincipal extends AppCompatActivity {
 
 
     //instacias de los fragment principales
@@ -25,6 +23,8 @@ public class ActivityLogin extends AppCompatActivity {
     SocialFragment social;
 
 
+    public ActivityPrincipal(){}
+
 
 
     BarraSuperiorFragment barraSuperior;
@@ -33,6 +33,9 @@ public class ActivityLogin extends AppCompatActivity {
 
     //inicializamos el componente con el que se movera de fragment el usuario
     BottomNavigationView barraNavegacion;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,15 @@ public class ActivityLogin extends AppCompatActivity {
             //la funcionalidad para cambiar el fragment del contentView segun al boton de la
             // barra de navegacion que de el usuario
             funcionalidadNavegacion();
+
+
+
+
+
+
+
+
+
     }
 
     private void inicializarComponentes() {
@@ -102,7 +114,7 @@ public class ActivityLogin extends AppCompatActivity {
 
     //con este metodo modificamos el contenedor del fragment con el fragment que me pase por parametros
     //con ayuda del metodo replace(contenedor,fragment nuevo)
-    public void setCurrentFragment (Fragment fragment){
+    public void setCurrentFragment(Fragment fragment){
         getSupportFragmentManager().beginTransaction().replace(R.id.ContainerView,fragment).commit();
     }
 

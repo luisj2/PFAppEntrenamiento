@@ -16,6 +16,7 @@ import com.example.fithealth.Permisos.Permisos;
 import com.example.fithealth.R;
 import com.example.fithealth.Usuario.DatosUsuario;
 import com.example.fithealth.Usuario.Usuario;
+import com.example.fithealth.UtilsHelper;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Firebase;
 import com.google.firebase.FirebaseApp;
@@ -45,6 +46,8 @@ public class Registro extends AppCompatActivity {
 
     Permisos permisos;
 
+    UtilsHelper utHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,7 @@ public class Registro extends AppCompatActivity {
     //inicializar las variables del inicio
     private void inicializarVariables() {
         permisos = new Permisos();
+        utHelper = new UtilsHelper();
         auth = FirebaseAuth.getInstance();
         fs = FirebaseFirestore.getInstance();
         helper = new FirebaseHelper(getApplicationContext());
@@ -91,12 +95,11 @@ public class Registro extends AppCompatActivity {
     public void registrarse(View view) {
 
         //comprobamos que el usuario tenga conexion estable
-        if(permisos.conexionEstable(getApplicationContext())){
+        if (permisos.conexionEstable(getApplicationContext())) {
             // Recuperamos los textos que ha introducido el usuario en los campos
-            String nuevoNombre = editTxtNuevoNombre.getText().toString();
-            String nuevaContrasenia = editTxtNuevaContrasenia.getText().toString();
-            String email = editTxtNuevoCorreo.getText().toString();
-
+            String nuevoNombre = utHelper.getTxtTextView(editTxtNuevoNombre);
+            String nuevaContrasenia = utHelper.getTxtTextView(editTxtNuevaContrasenia);
+            String email = utHelper.getTxtTextView(editTxtNuevoCorreo);
 
 
             // Si no están vacíos, entra al if
@@ -104,41 +107,18 @@ public class Registro extends AppCompatActivity {
                 if (helper.credencialesCorreoValidas(email)) { //comprobacion de correo
                     if (helper.credencialesUsuarioValidas(nuevoNombre)) { //comprobacion de nombre de usuario
 
-                        //hacemos una consulta a los datos: con el get accedemos a los decumentos de la coleccion
-                        //y con el addoncompleteListener maneja los datos recibidos y con el objeto task tratar con ellos
-                        fs.collection("usuarios").get().addOnCompleteListener( task ->{
-
-                            Map<String,Object> datosUsuario = null;
-                            boolean usuarioExiste = false;
-
-                            if(task.isSuccessful()){
-
-
-                                //recorre cada documento que hay en la base de datos, es decir la informacion de cada usuaario
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-
-                                    datosUsuario = document.getData();
-
-
-                                    //comprobamos si el document contiene el corrreo que han pasado por parametro
-                                    if(datosUsuario.get("Correo").toString().equals(email)){
-                                        Toast.makeText(this, "Ese correo ya existe", Toast.LENGTH_SHORT).show();
-                                        usuarioExiste = true;
-                                        break;
-                                    }
-
-                                }
-
-                                if(!usuarioExiste){ //el usuario no existe
-                                    Usuario usuario = new Usuario(email, nuevoNombre, nuevaContrasenia);
-
-                                    helper.registrarUsuario(usuario);
-                                }
-                            }else{
-                                Log.e("FirebaseError","Error al cargar los datos de fierebase");
-                            }
-                        });
-
+                        //Comprobamos la existencia del usuario haciendo una consulta de firebase y segun el resultado
+                        //llamamos al metodo de la interfaz onExistenciaUsuario con el resultado de l aexistencia del usuario
+                       helper.existeUsuario(email, new FirebaseHelper.OnExistenciaUsuarioListener() {
+                           @Override
+                           public void onExistenciaUsuario(boolean existe) {
+                               if(existe){
+                                   Toast.makeText(Registro.this, "Ese usuario ya existe", Toast.LENGTH_SHORT).show();
+                               }else{
+                                   helper.registrarUsuario(new Usuario(email,nuevoNombre,nuevaContrasenia));
+                               }
+                           }
+                       });
 
 
                     } else { //usuario no valido
@@ -154,21 +134,10 @@ public class Registro extends AppCompatActivity {
             } else { // Algún campo está vacío
                 Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show();
             }
-        }else{ //no tiene conexion
+        } else { //no tiene conexion
             Toast.makeText(this, "Comprueba tu conexion", Toast.LENGTH_SHORT).show();
         }
 
-    }
+    }//fun de registrarse
 
-
-
-
-
-
-    // Método para validar un nombre de usuario normal (permite letras, números y guiones bajos)
-
-
-
-
-
-}
+} // fin de la clase

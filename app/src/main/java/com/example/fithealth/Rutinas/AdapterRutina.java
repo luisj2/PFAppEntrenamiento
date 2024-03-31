@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fithealth.R;
+import com.example.fithealth.UtilsHelper;
 
 import java.util.List;
 
@@ -19,6 +20,11 @@ public class AdapterRutina extends RecyclerView.Adapter<ViewHolderRutina> {
 
     List<String> nombreRutinas;
     Context context;
+
+    UtilsHelper utHelper;
+
+    LayoutInflater inflater;
+    View view;
 
     public AdapterRutina(List<String> nombreRutinas, Context context) {
         this.nombreRutinas = nombreRutinas;
@@ -30,16 +36,13 @@ public class AdapterRutina extends RecyclerView.Adapter<ViewHolderRutina> {
     @Override
     public ViewHolderRutina onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-
-        View view = inflarVista(R.layout.rutina_items,parent);
+        inflater = LayoutInflater.from(parent.getContext());
+        view = inflater.inflate(R.layout.rutina_items,parent,false);
 
         return new ViewHolderRutina(view);
     }
 
-    private View inflarVista(int rutinaItems, ViewGroup parent) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return inflater.inflate(rutinaItems,parent,false);
-    }
+
 
     //hacemos la funcionalidad de nuestro recyclerview en este caso cambiando el textview que tenemos en el layour al nombre de la
     //rutina que queremos

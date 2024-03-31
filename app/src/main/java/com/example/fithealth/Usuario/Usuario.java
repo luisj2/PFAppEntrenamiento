@@ -7,6 +7,8 @@ public class Usuario {
     String nombreUnico;
     private String email;
     private String nombreUsario;
+
+
     private String contrasenia;
 
     private String hastagIdentificativo;

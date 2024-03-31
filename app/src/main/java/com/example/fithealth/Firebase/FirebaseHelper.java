@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.fithealth.AccederAplicacion.InicioSesion;
 import com.example.fithealth.Usuario.Usuario;
@@ -20,8 +21,16 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseAuthWebException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,6 +42,11 @@ public class FirebaseHelper {
     Context context;
 
     InicioSesion sesion;
+
+    final String COLECCION_USUARIOS = "usuarios";
+    final String COLECCION_EJERCICIOS = "Ejercicio";
+
+    final String COLECCION_RUTINAS = "Rutinas";
 
 
     public FirebaseHelper(Context context) {
@@ -47,6 +61,8 @@ public class FirebaseHelper {
         auth = FirebaseAuth.getInstance();
         this.context = context;
     }
+
+
 
 
 
@@ -89,7 +105,7 @@ public class FirebaseHelper {
 
 
 
-        fs.collection("usuarios").document(usuario.getId()).set(datosUsuario).addOnSuccessListener(aVoid -> {
+        fs.collection(COLECCION_USUARIOS).document(usuario.getId()).set(datosUsuario).addOnSuccessListener(aVoid -> {
                     // Éxito en la operación
                     Toast.makeText(context, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show();
                 })
@@ -175,6 +191,7 @@ public class FirebaseHelper {
         }
     }
 
+    //FUNCIONALIDADES EXTRA A FIREBASE
     //Comprobaer las credenciales del correo
     public boolean credencialesCorreoValidas(String email) {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
@@ -191,5 +208,127 @@ public class FirebaseHelper {
         return matcher.matches();
     }
 
+    public void AniadirEjercicio(){
+
+       // fs.collection(COLECCION_EJERCICIOS).get().addOnCompleteListener()
+    }
+
+
+    //INTERFACES USADAS PARA CONSULTAS
+    public interface CargaUsuarios {
+        void implementacionUsuariosFirestore (List<Usuario> usuarios);
+    }
+
+    public interface OnExistenciaUsuarioListener {
+        void onExistenciaUsuario(boolean existe);
+    }
+
+
+    //CONSULTAS FIREBASE FIRESTORE
+
+
+
+    public void getUsuarios (CargaUsuarios listener){
+
+        fs.collection(COLECCION_USUARIOS).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+               if(task.isSuccessful()){
+                   Log.i("infoUsuariosArray","He entrado");
+                   List <Usuario> usuarios = new ArrayList<Usuario>();
+
+                   for (QueryDocumentSnapshot snapshot:task.getResult()) {
+                       Usuario usuario = getUsuarioConSnapshoot(snapshot);
+                       usuarios.add(usuario);
+                   }
+
+                   //llamamos al metodo de la interfaz que pasamos por parametros para poder gestionar las operaciones asincronas
+                   listener.implementacionUsuariosFirestore(usuarios);
+
+
+               }else{
+                   comprobarErroresConsultas(task.getException());
+               }
+
+
+            }
+        });
+
+    }
+
+    public void getUsuariosPorNombre (String nombre,CargaUsuarios listener) {
+
+        fs.collection(COLECCION_USUARIOS).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    Usuario usuario;
+                    String nombreBusqueda;
+                    List <Usuario> usuarios = new ArrayList<>();
+                    for (QueryDocumentSnapshot snapshot:task.getResult()) {
+                        nombreBusqueda = snapshot.getString("UsuarioUnico");
+
+                        if (nombreBusqueda != null && !nombreBusqueda.isEmpty() && nombreBusqueda.contains(nombre)){
+                            usuario = getUsuarioConSnapshoot(snapshot);
+                            usuarios.add(usuario);
+                        }
+                    }
+
+                    listener.implementacionUsuariosFirestore(usuarios);
+
+                }else{
+                    comprobarErroresConsultas(task.getException());
+                }
+
+
+            }
+        });
+    }
+
+    public void existeUsuario(String correo, OnExistenciaUsuarioListener listener) {
+        CollectionReference reference = fs.collection(COLECCION_USUARIOS);
+        reference.whereEqualTo("Correo", correo).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot snapshot = task.getResult();
+                        if (snapshot != null && !snapshot.isEmpty()) {
+                            listener.onExistenciaUsuario(true);
+                        } else {
+                            listener.onExistenciaUsuario(false);
+                        }
+                    } else {
+                        comprobarErroresConsultas(task.getException());
+                    }
+                });
+    }
+
+
+
+
+
+
+
+    private Usuario getUsuarioConSnapshoot(QueryDocumentSnapshot snapshot) {
+        Usuario usuario = new Usuario();
+        usuario.setId(snapshot.getString("id"));
+        usuario.setContrasenia(snapshot.getString("Contrasenia"));
+        usuario.setNombreUnico(snapshot.getString("UsuarioUnico"));
+        usuario.setEmail(snapshot.getString("Correo"));
+
+        return usuario;
+    }
+
+    private void comprobarErroresConsultas(Exception exception) {
+
+       Log.i("infoUsuariosArray",exception.toString());
+
+
+    }
+
+
+
 
 }
+
+
