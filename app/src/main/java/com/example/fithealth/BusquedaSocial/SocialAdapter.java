@@ -21,12 +21,11 @@ import java.util.List;
 public class SocialAdapter extends RecyclerView.Adapter<SocialViewHolder>{
 
     private List<Usuario> usuarios; //lista de usuarios que va a mostrar en la lista
-    private UtilsHelper uthelper; //objeto que usaremos para inflar la vista
+
 
 
     public SocialAdapter(List<Usuario> usuarios) {
         this.usuarios = usuarios;
-        uthelper = new UtilsHelper();
     }
 
     //Inflar la vista del adapter

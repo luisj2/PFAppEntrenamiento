@@ -1,15 +1,28 @@
-package com.example.fithealth;
+package com.example.fithealth.PantallasPrincipales.principales.Entrenamiento;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
-import org.checkerframework.checker.units.qual.A;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.fithealth.AdapterSpinnerCustom;
+import com.example.fithealth.Ejercicios.Ejercicio;
+import com.example.fithealth.Firebase.FirebaseHelper;
+import com.example.fithealth.R;
+import com.example.fithealth.TipoEjercicioIconos;
+import com.example.fithealth.UtilsHelper;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +31,19 @@ public class CrearEjercicioActivity extends AppCompatActivity {
 
     Spinner spinnerTipoEjercicio;
 
+    ActivityResultLauncher<String> multimediaLauncher;
+
     Spinner spinnerPrivacidades;
 
+    EditText etNombreEjercicio;
+
     Button btnAniadirEjercicio;
+
+    ImageView ivImagenEjercicio;
+
+    ImageButton btnAniadirImagen;
+
+    FirebaseHelper helper;
 
 
     UtilsHelper utHelper;
@@ -28,6 +51,8 @@ public class CrearEjercicioActivity extends AppCompatActivity {
     String [] tiposMedidas,tiposEjercicios;
 
     List<TipoEjercicioIconos> opcionesTiposEjercicios;
+
+
 
 
     @Override
@@ -41,13 +66,43 @@ public class CrearEjercicioActivity extends AppCompatActivity {
 
         crearIU();
 
+        pedirAniadirImagen();
 
+
+    }
+
+    private void pedirAniadirImagen() {
+
+        btnAniadirImagen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ImagePicker.with(CrearEjercicioActivity.this)
+                        .crop()	    			//Crop image(Optional), Check Customization for more option
+                        .compress(1024)			//Final image size will be less than 1 MB(Optional)
+                        .maxResultSize(btnAniadirImagen.getWidth(), btnAniadirImagen.getHeight())	//Final image resolution will be less than 1080 x 1080(Optional)
+                        .start();
+
+            }
+        });
+
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Uri uri = data.getData();
+
+        ivImagenEjercicio.setImageURI(uri);
     }
 
     private void inicializarVariables() {
         tiposMedidas = rellenarMedidas();
         tiposEjercicios = rellenarTiposEjercicio();
         opcionesTiposEjercicios = new ArrayList<>();
+        helper = new FirebaseHelper(getApplicationContext());
         rellenarOpciones();
     }
 
@@ -58,9 +113,13 @@ public class CrearEjercicioActivity extends AppCompatActivity {
         AdapterSpinnerCustom adapterPrivacidades = new AdapterSpinnerCustom(this.getApplicationContext(),R.layout.items_custom_spinner,rellenarPrivacidades());
         spinnerPrivacidades.setAdapter(adapterPrivacidades);
 
+
         onClickbtnAniadirEjercicio();
 
+
     }
+
+
 
     private void onClickbtnAniadirEjercicio() {
         btnAniadirEjercicio.setOnClickListener(new View.OnClickListener() {
@@ -72,6 +131,28 @@ public class CrearEjercicioActivity extends AppCompatActivity {
     }
 
     private void AniadirEjercicioAFirebase() {
+        Ejercicio ejercicio = crearEjercicio();
+        helper.aniadirEjercicioFirestore(ejercicio);
+    }
+
+    private Ejercicio crearEjercicio() {
+        String nombreEjercicio = etNombreEjercicio.getText().toString();
+        int imageResource = 0;
+        String tipoEjercicio = txtIndexSpinner(spinnerTipoEjercicio);
+        String privacidad = txtIndexSpinner(spinnerPrivacidades);
+
+
+        Ejercicio ejercicio = new Ejercicio("",nombreEjercicio,0L,tipoEjercicio,privacidad);
+
+        return ejercicio;
+    }
+
+    private String txtIndexSpinner(Spinner spinner) {
+        ArrayAdapter <TipoEjercicioIconos> tipoEjercicioAdapter = (ArrayAdapter<TipoEjercicioIconos>) spinner.getAdapter();
+
+        int posicion = spinner.getSelectedItemPosition();
+
+        return tipoEjercicioAdapter.getItem(posicion).getNombre();
 
     }
 
@@ -93,6 +174,9 @@ public class CrearEjercicioActivity extends AppCompatActivity {
         spinnerTipoEjercicio = findViewById(R.id.spinnerTipoEjercicio);
         spinnerPrivacidades = findViewById(R.id.spinnerPrivacidades);
         btnAniadirEjercicio = findViewById(R.id.btnAniadirEjercicio);
+        etNombreEjercicio = findViewById(R.id.etNombreEjercicio);
+        ivImagenEjercicio = findViewById(R.id.ivImagenCrearEjercicio);
+        btnAniadirImagen = findViewById(R.id.btnImagenEjercicio);
     }
 
     public void rellenarOpciones (){

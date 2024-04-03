@@ -125,6 +125,13 @@ public class InicioSesion extends AppCompatActivity {
 
                 if(helper.credencialesCorreoValidas(correoElectronico)){
                     //Iniciamos sesion en Firebase
+                    helper.idUsuarioEnPreferences(correoElectronico, new FirebaseHelper.IdUsuario() {
+                        @Override
+                        public void getUserId(String id, SharedPreferences.Editor editor) {
+                            editor.putString("idUsuario",id);
+                            editor.commit();
+                        }
+                    });
                     helper.iniciarSesion(correoElectronico,contrasenia);
                 }else{
                     Toast.makeText(this, "Credenciales del correo invalidas", Toast.LENGTH_SHORT).show();

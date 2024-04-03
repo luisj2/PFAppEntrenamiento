@@ -72,7 +72,7 @@ public class Registro extends AppCompatActivity {
     //inicializar las variables del inicio
     private void inicializarVariables() {
         permisos = new Permisos();
-        utHelper = new UtilsHelper();
+        utHelper = new UtilsHelper(getApplicationContext());
         auth = FirebaseAuth.getInstance();
         fs = FirebaseFirestore.getInstance();
         helper = new FirebaseHelper(getApplicationContext());
@@ -104,7 +104,6 @@ public class Registro extends AppCompatActivity {
 
             // Si no están vacíos, entra al if
             if (!nuevoNombre.isEmpty() && !nuevaContrasenia.isEmpty() && !email.isEmpty()) { //¿campos vacios?
-                if (helper.credencialesCorreoValidas(email)) { //comprobacion de correo
                     if (helper.credencialesUsuarioValidas(nuevoNombre)) { //comprobacion de nombre de usuario
 
                         //Comprobamos la existencia del usuario haciendo una consulta de firebase y segun el resultado
@@ -126,12 +125,7 @@ public class Registro extends AppCompatActivity {
                         editTxtNuevoNombre.setText("");
                     }
 
-                } else { // correo no valido
-                    Toast.makeText(this, "Email no válido", Toast.LENGTH_SHORT).show();
-                    editTxtNuevoCorreo.setText("");
-                }
-
-            } else { // Algún campo está vacío
+                } else { // Algún campo está vacío
                 Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show();
             }
         } else { //no tiene conexion

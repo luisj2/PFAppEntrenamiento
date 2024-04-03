@@ -1,16 +1,22 @@
 package com.example.fithealth.Firebase;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.MutableLiveData;
 
 import com.example.fithealth.AccederAplicacion.InicioSesion;
+import com.example.fithealth.PantallasPrincipales.principales.Entrenamiento.BuscarEjercicioData;
+import com.example.fithealth.Ejercicios.Ejercicio;
+import com.example.fithealth.R;
 import com.example.fithealth.Usuario.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.AuthResult;
@@ -22,7 +28,9 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseAuthWebException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -31,6 +39,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,6 +51,10 @@ public class FirebaseHelper {
     Context context;
 
     InicioSesion sesion;
+
+    SharedPreferences preferences;
+
+    SharedPreferences.Editor editor;
 
     final String COLECCION_USUARIOS = "usuarios";
     final String COLECCION_EJERCICIOS = "Ejercicio";
@@ -134,6 +147,8 @@ public class FirebaseHelper {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
+
+
                         sesion.entrarEnAplicacion(correo,contrasenia);
                     }else{
                         comprobarErrorInicioSesion(task.getException());
@@ -156,6 +171,8 @@ public class FirebaseHelper {
         else if(error instanceof FirebaseAuthInvalidUserException){ //error de correo no registrado
             Toast.makeText(context, "El correo electronico no esta registrado", Toast.LENGTH_SHORT).show();
 
+        }else if(error instanceof FirebaseFirestoreException){
+            Toast.makeText(context, "Error al iniciar sesion", Toast.LENGTH_SHORT).show();
         }
         else  if(error instanceof FirebaseAuthInvalidCredentialsException) { //error de probablemente la contraaseña
             Toast.makeText(context, "Contraseña incorrecta", Toast.LENGTH_SHORT).show();
@@ -208,9 +225,52 @@ public class FirebaseHelper {
         return matcher.matches();
     }
 
-    public void AniadirEjercicio(){
+    public void aniadirEjercicioAUsuario(String idUsuario,String idEjercicio){
+        DocumentReference usuario = fs.collection(COLECCION_USUARIOS).document(idUsuario);
 
-       // fs.collection(COLECCION_EJERCICIOS).get().addOnCompleteListener()
+        DocumentReference ejercicio = fs.collection(COLECCION_EJERCICIOS).document(idEjercicio);
+
+        usuario.update("Ejercicios", FieldValue.arrayUnion(ejercicio)).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Log.i("AniadirEjercicio","Añadido con exito");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.i("AniadirEjercicio","Fallo al añadir el ejercicio");
+            }
+        });
+    }
+
+    public void aniadirEjercicioFirestore (Ejercicio ejercicio){
+
+        Map<String,Object> datosEjercicio = rellenarMapConEjercicio(ejercicio);
+
+        fs.collection(COLECCION_EJERCICIOS).add(datosEjercicio).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                documentReference.update("id",documentReference.getId());
+                Toast.makeText(context, "Ejercicio añadido correctamente", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context, "Error al añadir ejercicio", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private Map<String, Object> rellenarMapConEjercicio(Ejercicio ejercicio) {
+        Map <String,Object> datos = new HashMap<>();
+
+        datos.put("id",ejercicio.getId());
+        datos.put("nombreEjercicio",ejercicio.getNombreEjercicio());
+        datos.put("tipoEjercicio",ejercicio.getTipoEjercicio());
+        datos.put("imageResource",ejercicio.getImageResource());
+        datos.put("privacidad",ejercicio.getPrivacidad());
+
+        return datos;
     }
 
 
@@ -222,6 +282,16 @@ public class FirebaseHelper {
     public interface OnExistenciaUsuarioListener {
         void onExistenciaUsuario(boolean existe);
     }
+
+    public interface IdUsuario{
+        void getUserId (String id,SharedPreferences.Editor editor);
+    }
+
+    public interface GestionEjercicios{
+        void infoEjercicios(List<BuscarEjercicioData> ejercicios);
+    }
+
+
 
 
     //CONSULTAS FIREBASE FIRESTORE
@@ -303,6 +373,31 @@ public class FirebaseHelper {
                 });
     }
 
+    public void idUsuarioEnPreferences (String correo,IdUsuario callback){
+
+        String idUsuario = "";
+        fs.collection(COLECCION_EJERCICIOS).whereEqualTo("Correo",correo).limit(1).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                if(task.isSuccessful()){
+                    SharedPreferences preferences = context.getSharedPreferences("DatosInicio", MODE_PRIVATE);
+                    editor = preferences.edit();
+                    String id = "";
+
+                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                            id = snapshot.getString("id");
+                    }
+
+                    callback.getUserId(id,editor);
+
+                }else{
+                    comprobarErroresConsultas(task.getException());
+                }
+
+            }
+        });
+    }
 
 
 
@@ -317,6 +412,55 @@ public class FirebaseHelper {
         usuario.setEmail(snapshot.getString("Correo"));
 
         return usuario;
+    }
+
+    public void getEjerciciosData(String nombreEjercicio,GestionEjercicios callback){
+
+        fs.collection(COLECCION_EJERCICIOS).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+
+                    List <BuscarEjercicioData> ejercicios = new ArrayList<>();
+
+                    for (DocumentSnapshot snapshot:task.getResult()) {
+                        String nombreEjercicioBusqueda = snapshot.getString("nombreEjercicio").trim().toLowerCase();
+
+                        if(nombreEjercicioBusqueda.contains(nombreEjercicio)){
+                            BuscarEjercicioData datas = crearejercicioConSnapshot(snapshot);
+                            ejercicios.add(datas);
+                        }
+                    }
+
+                    callback.infoEjercicios(ejercicios);
+
+                }else{
+
+                    comprobarErroresConsultas(task.getException());
+                }
+            }
+        });
+    }
+
+    private BuscarEjercicioData crearejercicioConSnapshot(DocumentSnapshot snapshot) {
+        String nombreEjercicio = snapshot.getString("nombreEjercicio");
+        Long imageResource = snapshot.getLong("imageResource");
+        String privacidad = snapshot.getString("privacidad");
+
+        int resourcePrivacidad = getResourcePrivacidad(privacidad);
+
+        return new BuscarEjercicioData(imageResource.intValue(),nombreEjercicio,resourcePrivacidad);
+    }
+
+    private int getResourcePrivacidad(String privacidad) {
+        int resource = 0;
+        if(privacidad.equals("Publico")){
+            resource = R.drawable.ic_publico;
+        }else{
+            resource = R.drawable.ic_privado;
+        }
+
+        return resource;
     }
 
     private void comprobarErroresConsultas(Exception exception) {

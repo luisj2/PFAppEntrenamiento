@@ -65,7 +65,7 @@ public class SocialFragment extends Fragment {
     }
 
     private void inicializarVariables() {
-        utHelper = new UtilsHelper();
+        utHelper = new UtilsHelper(getActivity());
         helper = new FirebaseHelper(getActivity());
     }
 
