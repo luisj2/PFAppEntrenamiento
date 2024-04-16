@@ -84,7 +84,7 @@ public class EntrenamientoFragment extends Fragment {
     }
 
     public void enlazarComponentes(View view){
-        btnCrearEjercicio = view.findViewById(R.id.btnCrearEjercicio);
+        //btnCrearEjercicio = view.findViewById(R.id.btnCrearEjercicio);
         rvListaRutinas = view.findViewById(R.id.rvListaRutinas);
     }
 

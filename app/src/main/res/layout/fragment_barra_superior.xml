@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
+    android:layout_height="wrap_content"
     tools:context=".BarraSuperiorFragment">
 
    <LinearLayout
        android:layout_width="match_parent"
-       android:layout_height="match_parent"
+       android:layout_height="70dp"
        android:orientation="horizontal"
        android:padding="16dp"
        android:background="@color/black"
@@ -16,9 +16,9 @@
 
       <ImageButton
           android:id="@+id/buttonPerfil"
-          android:layout_width="53dp"
-          android:layout_height="40dp"
-          android:layout_gravity="center"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
           android:background="@drawable/boton_redondo"
           android:src="@android:drawable/btn_star_big_on" />
 
@@ -33,9 +33,10 @@
       <ImageButton
           android:id="@+id/buttonAjustes"
           android:layout_width="50dp"
-          android:layout_height="40dp"
-          android:layout_gravity="center"
-          android:src="@drawable/iconoajustes"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:src="@drawable/ic_settings"
+          android:background="@null"
           android:scaleType="fitCenter"
           />
 

@@ -7,18 +7,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SearchView;
-import android.widget.Toast;
 
-import com.example.fithealth.BusquedaSocial.SocialAdapter;
+import com.example.fithealth.PantallasPrincipales.principales.Social.BusquedaSocial.SocialAdapter;
 import com.example.fithealth.Firebase.FirebaseHelper;
 import com.example.fithealth.R;
-import com.example.fithealth.Rutinas.AdapterRutina;
 import com.example.fithealth.Usuario.Usuario;
 import com.example.fithealth.UtilsHelper;
 

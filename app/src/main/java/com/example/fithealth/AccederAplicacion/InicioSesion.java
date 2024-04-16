@@ -2,9 +2,11 @@ package com.example.fithealth.AccederAplicacion;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -16,6 +18,7 @@ import com.example.fithealth.BaseDeDatos.FitHealthDatabase;
 import com.example.fithealth.BaseDeDatos.TablaUsuarios;
 import com.example.fithealth.Firebase.FirebaseHelper;
 import com.example.fithealth.Activitys.ActivityPrincipal;
+import com.example.fithealth.PantallaCarga;
 import com.example.fithealth.Permisos.Permisos;
 import com.example.fithealth.R;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -40,6 +43,7 @@ public class InicioSesion extends AppCompatActivity {
 
     SharedPreferences.Editor editor; //editar lo que hadentro de la instacia de mantenerCuentaInicada de SharedPreferences
 
+    Dialog pantallaCarga;
 
     public InicioSesion() {
     }
@@ -80,7 +84,8 @@ public class InicioSesion extends AppCompatActivity {
     private void inicializarVariables() {
         permisos = new Permisos();
         fs = FirebaseFirestore.getInstance();
-        helper = new FirebaseHelper(getApplicationContext(),this);
+        helper = new FirebaseHelper(this,this);
+        pantallaCarga = PantallaCarga.cargarPantallaCarga(this);
     }
 
     private void recuperarDatosPreferences() {
@@ -125,11 +130,13 @@ public class InicioSesion extends AppCompatActivity {
 
                 if(helper.credencialesCorreoValidas(correoElectronico)){
                     //Iniciamos sesion en Firebase
+
+                    pantallaCarga.show();
+
                     helper.idUsuarioEnPreferences(correoElectronico, new FirebaseHelper.IdUsuario() {
                         @Override
                         public void getUserId(String id, SharedPreferences.Editor editor) {
-                            editor.putString("idUsuario",id);
-                            editor.commit();
+                            registrarEnPreferences("IdUser",id);
                         }
                     });
                     helper.iniciarSesion(correoElectronico,contrasenia);
@@ -149,11 +156,10 @@ public class InicioSesion extends AppCompatActivity {
 
     }
 
-
-
-
-
-
+        private void registrarEnPreferences(String clave, String valor) {
+            editor.putString(clave,valor);
+            editor.apply();
+        }
 
 
     public void moverseARegistro(View view){
@@ -168,6 +174,8 @@ public class InicioSesion extends AppCompatActivity {
 
 
     public void entrarEnAplicacion(String correoElectronico,String contrasenia) {
+
+        PantallaCarga.esconderDialog(pantallaCarga);
         Toast.makeText(this, "Usuario correcto", Toast.LENGTH_SHORT).show();
 
         // Comprobamos si el usuario quiere mantener la cuenta iniciada después de iniciar sesión

@@ -13,12 +13,14 @@ private String tipoEjercicio;
 
 private String privacidad;
 
-    public Ejercicio(String id, String nombreEjercicio, Long imageResource, String tipoEjercicio, String privacidad) {
+    public Ejercicio(String id, String nombreEjercicio, String tipoEjercicio, String privacidad) {
         this.id = id;
         this.nombreEjercicio = nombreEjercicio;
-        this.imageResource = imageResource;
         this.tipoEjercicio = tipoEjercicio;
         this.privacidad = privacidad;
+    }
+
+    public Ejercicio() {
     }
 
     public Ejercicio(String nombreEjercicio, Long imageResource, String privacidad) {

@@ -19,7 +19,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+    
 
+
+        <!--
     <Button
         android:id="@+id/btnCrearRutina"
         android:layout_width="0dp"
@@ -46,6 +49,7 @@
         app:layout_constraintBottom_toTopOf="@+id/tituloRutinasCreadas"
         app:layout_constraintEnd_toStartOf="@+id/btnCrearRutina"
         app:layout_constraintStart_toStartOf="parent" />
+        -->
 
 
     <TextView

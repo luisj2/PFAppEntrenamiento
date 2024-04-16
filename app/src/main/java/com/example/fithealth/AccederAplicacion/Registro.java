@@ -71,11 +71,10 @@ public class Registro extends AppCompatActivity {
 
     //inicializar las variables del inicio
     private void inicializarVariables() {
-        permisos = new Permisos();
         utHelper = new UtilsHelper(getApplicationContext());
         auth = FirebaseAuth.getInstance();
         fs = FirebaseFirestore.getInstance();
-        helper = new FirebaseHelper(getApplicationContext());
+        helper = new FirebaseHelper(this);
     }
 
     //inicializar los componentes

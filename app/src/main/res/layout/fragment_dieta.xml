@@ -7,6 +7,7 @@
     tools:context=".PantallasPrincipales.principales.Dieta.DietaFragment">
 
 
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/barraNavegacionDieta"
         android:layout_width="match_parent"

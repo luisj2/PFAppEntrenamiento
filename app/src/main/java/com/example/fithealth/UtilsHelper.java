@@ -40,6 +40,13 @@ public class UtilsHelper {
                 .into(contenedor);
     }
 
+    public void adaptarImagen(Uri url,ImageView contenedor,int ancho,int alto){
+        Glide.with(context)
+                .load(url)
+                .override(ancho,alto)// Carga la imagen desde la URL
+                .into(contenedor);
+    }
+
     public void adaptarImagen (int imageResource,ImageView contenedor,int ancho,int alto){
         Glide.with(context)
                 .load(imageResource)

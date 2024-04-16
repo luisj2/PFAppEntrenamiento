@@ -2,14 +2,18 @@ package com.example.fithealth.Firebase;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.example.fithealth.AccederAplicacion.InicioSesion;
+import com.example.fithealth.PantallaCarga;
 import com.example.fithealth.PantallasPrincipales.principales.Entrenamiento.BuscarEjercicioData;
 import com.example.fithealth.Ejercicios.Ejercicio;
 import com.example.fithealth.R;
@@ -35,6 +39,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.google.firestore.v1.Document;
+import com.google.firestore.v1.WriteResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,6 +57,8 @@ public class FirebaseHelper {
 
     FirebaseFirestore fs;
     FirebaseAuth auth;
+
+    StorageReference storage;
     Context context;
 
     InicioSesion sesion;
@@ -65,37 +76,70 @@ public class FirebaseHelper {
     public FirebaseHelper(Context context) {
         fs = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
+        storage = FirebaseStorage.getInstance().getReference();
         this.context = context;
     }
 
-    public FirebaseHelper(Context context,InicioSesion sesion) {
+    public FirebaseHelper(Context context, InicioSesion sesion) {
         this.sesion = sesion;
         fs = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         this.context = context;
     }
 
+    //INTERFACES USADAS PARA CONSULTAS
+    public interface CargaUsuarios {
+        void implementacionUsuariosFirestore(List<Usuario> usuarios);
+    }
+
+    public interface OnExistenciaUsuarioListener {
+        void onExistenciaUsuario(boolean existe);
+    }
+
+    public interface IdUsuario {
+        void getUserId(String id, SharedPreferences.Editor editor);
+    }
+
+    public interface GestionEjercicios {
+        void infoEjercicios(List<BuscarEjercicioData> ejercicios);
+    }
+
+    public interface IdentificadorEjercicio {
+        void getEjercicioId(String id);
+    }
+
+    public interface DevolverEjercicio {
+        void getId(String id);
+    }
+
+    public interface UrlDescargada {
+        void getDowloadUrl(String urlDescarga);
+    }
 
 
+    //REGISTRO DE USUARIO
 
+    //crear un usuario en firebase auth
+    public void registrarUsuario(Usuario usuario) {
 
-
-
-    public void registrarUsuario(Usuario usuario){
-
+        Dialog dialog = PantallaCarga.cargarPantallaCarga(context);
+        dialog.show();
         auth.createUserWithEmailAndPassword(usuario.getEmail(), usuario.getContrasenia()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     FirebaseUser firebaseUser = auth.getCurrentUser();
                     if (firebaseUser != null) {
-                        rellenarConUsuarioFirebase(firebaseUser,usuario);
+                        rellenarConUsuarioFirebase(firebaseUser, usuario);
                     } else {
                         Log.i("Registro", "Usuario nulo");
                     }
+                    PantallaCarga.esconderDialog(dialog);
                 } else {
-                   comprobarErrorRegistro(task.getException());
+                    PantallaCarga.esconderDialog(dialog);
+                    comprobarErrorRegistro(task.getException());
                 }
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -105,17 +149,17 @@ public class FirebaseHelper {
         });
     }
 
+    //crear modificar el usuario con el objeto de firebseUser
     private void rellenarConUsuarioFirebase(FirebaseUser firebaseUser, Usuario usuario) {
         usuario.setId(firebaseUser.getUid());
-        usuario.setHastagIdentificativo(usuario.getId().substring(0,5).toUpperCase());
+        usuario.setHastagIdentificativo(usuario.getId().substring(0, 6));
         usuario.setNombreUnico(usuario.getNombreUsario() + " #" + usuario.getHastagIdentificativo());
         registrarUsuarioFirestore(usuario);
     }
 
-
-    private void registrarUsuarioFirestore(Usuario usuario){
+    //registrar el usuasrio con los datos de parametros a la coleccion de usuarios de firebase firestore
+    private void registrarUsuarioFirestore(Usuario usuario) {
         HashMap<String, Object> datosUsuario = rellenarHashMapConUsuario(usuario);
-
 
 
         fs.collection(COLECCION_USUARIOS).document(usuario.getId()).set(datosUsuario).addOnSuccessListener(aVoid -> {
@@ -127,12 +171,14 @@ public class FirebaseHelper {
                     Toast.makeText(context, "Error al registrar usuario", Toast.LENGTH_SHORT).show();
                 });
     }
+
+    //convertir los datos del objeto de usuarios en un hashnmap
     private HashMap<String, Object> rellenarHashMapConUsuario(Usuario usuario) {
         HashMap<String, Object> datosUsuario = new HashMap<>();
 
-        datosUsuario.put("id",usuario.getId());
-        datosUsuario.put("UsuarioUnico",usuario.getNombreUnico());
-        datosUsuario.put("hashtagIdentificativo",usuario.getHastagIdentificativo());
+        datosUsuario.put("id", usuario.getId());
+        datosUsuario.put("UsuarioUnico", usuario.getNombreUnico());
+        datosUsuario.put("hashtagIdentificativo", usuario.getHastagIdentificativo());
         datosUsuario.put("Correo", usuario.getEmail());
         datosUsuario.put("NombreUsuario", usuario.getNombreUsario());
         datosUsuario.put("Contrasenia", usuario.getContrasenia());
@@ -140,17 +186,18 @@ public class FirebaseHelper {
         return datosUsuario;
     }
 
-    public void iniciarSesion (String correo,String contrasenia){
-        
-        if(sesion != null){
-            auth.signInWithEmailAndPassword(correo,contrasenia).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+    //metodo de inicio sesion a un usuario previamente registrado con el objeto Auth de firebase
+    public void iniciarSesion(String correo, String contrasenia) {
+
+        if (sesion != null) {
+            auth.signInWithEmailAndPassword(correo, contrasenia).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
 
 
-                        sesion.entrarEnAplicacion(correo,contrasenia);
-                    }else{
+                        sesion.entrarEnAplicacion(correo, contrasenia);
+                    } else {
                         comprobarErrorInicioSesion(task.getException());
 
                     }
@@ -158,57 +205,49 @@ public class FirebaseHelper {
                 }
             });
         }
-    
+
     }
 
+    //comprobaciones de exceptions en el inicio sesion para dar informacion al usuario de por que no se puede meter en la aplicacion
     private void comprobarErrorInicioSesion(Exception error) {
-        if(error instanceof FirebaseAuthWeakPasswordException){ //error de contrasenia debil
+        if (error instanceof FirebaseAuthWeakPasswordException) { //error de contrasenia debil
             Toast.makeText(context, "Contraseña debil o no valida", Toast.LENGTH_SHORT).show();
-        }
-        else if(error instanceof FirebaseAuthWebException){ //error en la conexion
+        } else if (error instanceof FirebaseAuthWebException) { //error en la conexion
             Toast.makeText(context, "Error en la red", Toast.LENGTH_SHORT).show();
-        }
-        else if(error instanceof FirebaseAuthInvalidUserException){ //error de correo no registrado
+        } else if (error instanceof FirebaseAuthInvalidUserException) { //error de correo no registrado
             Toast.makeText(context, "El correo electronico no esta registrado", Toast.LENGTH_SHORT).show();
 
-        }else if(error instanceof FirebaseFirestoreException){
+        } else if (error instanceof FirebaseFirestoreException) {
             Toast.makeText(context, "Error al iniciar sesion", Toast.LENGTH_SHORT).show();
-        }
-        else  if(error instanceof FirebaseAuthInvalidCredentialsException) { //error de probablemente la contraaseña
+        } else if (error instanceof FirebaseAuthInvalidCredentialsException) { //error de probablemente la contraaseña
             Toast.makeText(context, "Contraseña incorrecta", Toast.LENGTH_SHORT).show();
-        }
-        else if(error instanceof FirebaseTooManyRequestsException){
+        } else if (error instanceof FirebaseTooManyRequestsException) {
             Toast.makeText(context, "Demasiados intentos intentalo mas tarde", Toast.LENGTH_SHORT).show();
-        }
-
-        else { //cualquier otro error
-            Log.e("ErrorFirebase","Error inesperado "+error);
+        } else { //cualquier otro error
+            Log.e("ErrorFirebase", "Error inesperado " + error);
             Toast.makeText(context, "Error inesperado", Toast.LENGTH_SHORT).show();
         }
     }
 
+    //comprobaciones de errores para el registrro
     private void comprobarErrorRegistro(Exception error) {
-        if(error instanceof FirebaseAuthWeakPasswordException){ //error de contrasenia debil
+        if (error instanceof FirebaseAuthWeakPasswordException) { //error de contrasenia debil
             Toast.makeText(context, "Contraseña debil o no valida", Toast.LENGTH_SHORT).show();
-        }
-        else if(error instanceof FirebaseAuthWebException){ //error en la conexion
+        } else if (error instanceof FirebaseAuthWebException) { //error en la conexion
             Toast.makeText(context, "Error en la red", Toast.LENGTH_SHORT).show();
-        }
-        else if(error instanceof FirebaseAuthUserCollisionException){ //error de correo ya esta registrado
+        } else if (error instanceof FirebaseAuthUserCollisionException) { //error de correo ya esta registrado
             Toast.makeText(context, "El correo electronico no esta registrado", Toast.LENGTH_SHORT).show();
 
-        }
-        else  if(error instanceof FirebaseAuthInvalidCredentialsException) { //error de probablemente la contraaseña
+        } else if (error instanceof FirebaseAuthInvalidCredentialsException) { //error de probablemente la contraaseña
             Toast.makeText(context, "comprueba que el correo y la contraseña sean correctas", Toast.LENGTH_SHORT).show();
-        }
-
-        else { //cualquier otro error
-            Log.e("ErrorFirebase","Error inesperado "+error);
+        } else { //cualquier otro error
+            Log.e("ErrorFirebase", "Error inesperado " + error);
             Toast.makeText(context, "Error inesperado", Toast.LENGTH_SHORT).show();
         }
     }
 
     //FUNCIONALIDADES EXTRA A FIREBASE
+
     //Comprobaer las credenciales del correo
     public boolean credencialesCorreoValidas(String email) {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
@@ -225,7 +264,10 @@ public class FirebaseHelper {
         return matcher.matches();
     }
 
-    public void aniadirEjercicioAUsuario(String idUsuario,String idEjercicio){
+    //EJERCICIOS
+
+
+    public void aniadirEjercicioAUsuario(String idUsuario, String idEjercicio) {
         DocumentReference usuario = fs.collection(COLECCION_USUARIOS).document(idUsuario);
 
         DocumentReference ejercicio = fs.collection(COLECCION_EJERCICIOS).document(idEjercicio);
@@ -233,25 +275,46 @@ public class FirebaseHelper {
         usuario.update("Ejercicios", FieldValue.arrayUnion(ejercicio)).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                Log.i("AniadirEjercicio","Añadido con exito");
+                Log.i("AniadirEjercicio", "Añadido con exito");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.i("AniadirEjercicio","Fallo al añadir el ejercicio");
+                Log.i("AniadirEjercicio", "Fallo al añadir el ejercicio");
             }
         });
     }
 
-    public void aniadirEjercicioFirestore (Ejercicio ejercicio){
+    public void updateEjercicio(String idEjercicio, String clave, Object valor) {
 
-        Map<String,Object> datosEjercicio = rellenarMapConEjercicio(ejercicio);
+        DocumentReference reference = fs.collection(COLECCION_EJERCICIOS).document(idEjercicio);
+
+        reference.update(clave, valor).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.d("Operacion", "Operacion realizada con exito");
+                } else {
+                    Log.e("Operacion", "Operacion fallida");
+                }
+            }
+        });
+    }
+
+    //añadimos el ejercicio pasado por parametros a la coleccion de ejercicios de firebase firestore
+    public void aniadirEjercicioFirestore(Ejercicio ejercicio, DevolverEjercicio callback) {
+
+        Map<String, Object> datosEjercicio = rellenarMapConEjercicio(ejercicio);
 
         fs.collection(COLECCION_EJERCICIOS).add(datosEjercicio).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
-                documentReference.update("id",documentReference.getId());
-                Toast.makeText(context, "Ejercicio añadido correctamente", Toast.LENGTH_SHORT).show();
+
+                Map<String, Object> idMap = new HashMap<String, Object>() {{
+                    put("id", documentReference.getId());
+                }};
+                documentReference.update(idMap);
+                callback.getId(documentReference.getId());
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -261,65 +324,110 @@ public class FirebaseHelper {
         });
     }
 
-    private Map<String, Object> rellenarMapConEjercicio(Ejercicio ejercicio) {
-        Map <String,Object> datos = new HashMap<>();
 
-        datos.put("id",ejercicio.getId());
-        datos.put("nombreEjercicio",ejercicio.getNombreEjercicio());
-        datos.put("tipoEjercicio",ejercicio.getTipoEjercicio());
-        datos.put("imageResource",ejercicio.getImageResource());
-        datos.put("privacidad",ejercicio.getPrivacidad());
+    //rellenamos un hashmap con un obn
+    private Map<String, Object> rellenarMapConEjercicio(Ejercicio ejercicio) {
+        Map<String, Object> datos = new HashMap<>();
+
+        datos.put("id", ejercicio.getId());
+        datos.put("nombreEjercicio", ejercicio.getNombreEjercicio());
+        datos.put("tipoEjercicio", ejercicio.getTipoEjercicio());
+        datos.put("privacidad", ejercicio.getPrivacidad());
 
         return datos;
     }
 
 
-    //INTERFACES USADAS PARA CONSULTAS
-    public interface CargaUsuarios {
-        void implementacionUsuariosFirestore (List<Usuario> usuarios);
-    }
-
-    public interface OnExistenciaUsuarioListener {
-        void onExistenciaUsuario(boolean existe);
-    }
-
-    public interface IdUsuario{
-        void getUserId (String id,SharedPreferences.Editor editor);
-    }
-
-    public interface GestionEjercicios{
-        void infoEjercicios(List<BuscarEjercicioData> ejercicios);
-    }
-
-
-
-
     //CONSULTAS FIREBASE FIRESTORE
 
 
+    //CONSULTAS DE EJERCICIOS
 
-    public void getUsuarios (CargaUsuarios listener){
+    private BuscarEjercicioData crearejercicioConSnapshot(DocumentSnapshot snapshot) {
+        String nombreEjercicio = snapshot.getString("nombreEjercicio");
+        Long imageResource = snapshot.getLong("imageResource");
+        String privacidad = snapshot.getString("privacidad");
+
+        int resourcePrivacidad = getResourcePrivacidad(privacidad);
+
+        return new BuscarEjercicioData(imageResource.intValue(), nombreEjercicio, resourcePrivacidad);
+    }
+
+    public void getIdEjercicioByDatos(String nombreEjercicio, String privacidad, IdentificadorEjercicio callback) {
+
+        fs.collection(COLECCION_EJERCICIOS).whereEqualTo("nombreEjercicio", nombreEjercicio)
+                .whereEqualTo("privacidad", privacidad)
+                .limit(1).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot snapshot = task.getResult();
+                            if (snapshot != null && !snapshot.isEmpty()) {
+                                DocumentSnapshot document = snapshot.getDocuments().get(0);
+
+                                String id = document.getId();
+
+                                callback.getEjercicioId(id);
+
+
+                            }
+                        }
+                    }
+                });
+    }
+
+    public void getEjerciciosData(String nombreEjercicio, GestionEjercicios callback) {
+
+        fs.collection(COLECCION_EJERCICIOS).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+
+                    List<BuscarEjercicioData> ejercicios = new ArrayList<>();
+
+                    for (DocumentSnapshot snapshot : task.getResult()) {
+                        String nombreEjercicioBusqueda = snapshot.getString("nombreEjercicio").trim().toLowerCase();
+
+                        if (nombreEjercicioBusqueda.contains(nombreEjercicio)) {
+                            BuscarEjercicioData datas = crearejercicioConSnapshot(snapshot);
+                            ejercicios.add(datas);
+                        }
+                    }
+
+                    callback.infoEjercicios(ejercicios);
+
+                } else {
+
+                    comprobarErroresConsultas(task.getException());
+                }
+            }
+        });
+    }
+
+
+    //CONSULTAS DE USUARIOS
+    public void getUsuarios(CargaUsuarios listener) {
 
         fs.collection(COLECCION_USUARIOS).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-               if(task.isSuccessful()){
-                   Log.i("infoUsuariosArray","He entrado");
-                   List <Usuario> usuarios = new ArrayList<Usuario>();
+                if (task.isSuccessful()) {
+                    Log.i("infoUsuariosArray", "He entrado");
+                    List<Usuario> usuarios = new ArrayList<Usuario>();
 
-                   for (QueryDocumentSnapshot snapshot:task.getResult()) {
-                       Usuario usuario = getUsuarioConSnapshoot(snapshot);
-                       usuarios.add(usuario);
-                   }
+                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                        Usuario usuario = getUsuarioConSnapshoot(snapshot);
+                        usuarios.add(usuario);
+                    }
 
-                   //llamamos al metodo de la interfaz que pasamos por parametros para poder gestionar las operaciones asincronas
-                   listener.implementacionUsuariosFirestore(usuarios);
+                    //llamamos al metodo de la interfaz que pasamos por parametros para poder gestionar las operaciones asincronas
+                    listener.implementacionUsuariosFirestore(usuarios);
 
 
-               }else{
-                   comprobarErroresConsultas(task.getException());
-               }
+                } else {
+                    comprobarErroresConsultas(task.getException());
+                }
 
 
             }
@@ -327,19 +435,19 @@ public class FirebaseHelper {
 
     }
 
-    public void getUsuariosPorNombre (String nombre,CargaUsuarios listener) {
+    public void getUsuariosPorNombre(String nombre, CargaUsuarios listener) {
 
         fs.collection(COLECCION_USUARIOS).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     Usuario usuario;
                     String nombreBusqueda;
-                    List <Usuario> usuarios = new ArrayList<>();
-                    for (QueryDocumentSnapshot snapshot:task.getResult()) {
+                    List<Usuario> usuarios = new ArrayList<>();
+                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
                         nombreBusqueda = snapshot.getString("UsuarioUnico");
 
-                        if (nombreBusqueda != null && !nombreBusqueda.isEmpty() && nombreBusqueda.contains(nombre)){
+                        if (nombreBusqueda != null && !nombreBusqueda.isEmpty() && nombreBusqueda.contains(nombre)) {
                             usuario = getUsuarioConSnapshoot(snapshot);
                             usuarios.add(usuario);
                         }
@@ -347,7 +455,7 @@ public class FirebaseHelper {
 
                     listener.implementacionUsuariosFirestore(usuarios);
 
-                }else{
+                } else {
                     comprobarErroresConsultas(task.getException());
                 }
 
@@ -373,90 +481,64 @@ public class FirebaseHelper {
                 });
     }
 
-    public void idUsuarioEnPreferences (String correo,IdUsuario callback){
+    public void idUsuarioEnPreferences(String correo, IdUsuario callback) {
 
-        String idUsuario = "";
-        fs.collection(COLECCION_EJERCICIOS).whereEqualTo("Correo",correo).limit(1).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+        fs.collection(COLECCION_USUARIOS).whereEqualTo("Correo", correo).limit(1).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
+                    Log.i("IdRegistrado", String.valueOf(task.getResult()));
                     SharedPreferences preferences = context.getSharedPreferences("DatosInicio", MODE_PRIVATE);
                     editor = preferences.edit();
                     String id = "";
 
-                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                    QuerySnapshot querySnapshot = task.getResult();
+
+                    if (querySnapshot != null && !querySnapshot.isEmpty()) {
+
+                        for (QueryDocumentSnapshot snapshot : task.getResult()) {
                             id = snapshot.getString("id");
+                            Log.i("IdRegistrado", id + " es el id del usuario");
+                        }
+                    } else {
+                        Log.i("IdRegistrado", "No se encontraron resultados");
                     }
 
-                    callback.getUserId(id,editor);
+                    callback.getUserId(id, editor);
 
-                }else{
+
+                } else {
                     comprobarErroresConsultas(task.getException());
                 }
 
             }
         });
     }
-
-
-
-
 
 
     private Usuario getUsuarioConSnapshoot(QueryDocumentSnapshot snapshot) {
         Usuario usuario = new Usuario();
         usuario.setId(snapshot.getString("id"));
         usuario.setContrasenia(snapshot.getString("Contrasenia"));
+        usuario.setNombreUsario(snapshot.getString("NombreUsuario"));
+        usuario.setHastagIdentificativo(snapshot.getString("hashtagIdentificativo"));
         usuario.setNombreUnico(snapshot.getString("UsuarioUnico"));
         usuario.setEmail(snapshot.getString("Correo"));
 
         return usuario;
     }
 
-    public void getEjerciciosData(String nombreEjercicio,GestionEjercicios callback){
 
-        fs.collection(COLECCION_EJERCICIOS).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
 
-                    List <BuscarEjercicioData> ejercicios = new ArrayList<>();
 
-                    for (DocumentSnapshot snapshot:task.getResult()) {
-                        String nombreEjercicioBusqueda = snapshot.getString("nombreEjercicio").trim().toLowerCase();
-
-                        if(nombreEjercicioBusqueda.contains(nombreEjercicio)){
-                            BuscarEjercicioData datas = crearejercicioConSnapshot(snapshot);
-                            ejercicios.add(datas);
-                        }
-                    }
-
-                    callback.infoEjercicios(ejercicios);
-
-                }else{
-
-                    comprobarErroresConsultas(task.getException());
-                }
-            }
-        });
-    }
-
-    private BuscarEjercicioData crearejercicioConSnapshot(DocumentSnapshot snapshot) {
-        String nombreEjercicio = snapshot.getString("nombreEjercicio");
-        Long imageResource = snapshot.getLong("imageResource");
-        String privacidad = snapshot.getString("privacidad");
-
-        int resourcePrivacidad = getResourcePrivacidad(privacidad);
-
-        return new BuscarEjercicioData(imageResource.intValue(),nombreEjercicio,resourcePrivacidad);
-    }
 
     private int getResourcePrivacidad(String privacidad) {
         int resource = 0;
-        if(privacidad.equals("Publico")){
+        if (privacidad.equals("Publico")) {
             resource = R.drawable.ic_publico;
-        }else{
+        } else {
             resource = R.drawable.ic_privado;
         }
 
@@ -465,12 +547,71 @@ public class FirebaseHelper {
 
     private void comprobarErroresConsultas(Exception exception) {
 
-       Log.i("infoUsuariosArray",exception.toString());
+        Log.i("infoUsuariosArray", exception.toString());
 
 
     }
 
+    //STORAGE(Imagenes)
 
+    public void subirImagen(String ruta, Uri url) {
+        StorageReference reference = storage.child(ruta);
+
+        reference.putFile(url).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(context, "Imagen subida correctamente", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context, "Error al subir la imagen", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void subirImagen(String ruta, Uri url, UrlDescargada callback) {
+        StorageReference reference = storage.child(ruta);
+
+        reference.putFile(url).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                //Obtenemos la url web de la imagen que hemos subido
+                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+
+                boolean tiempoLimite = false; //comprobacion del tiempo
+                long tiempoEspera = System.currentTimeMillis() + (5 * 1000); //tiempo de espera limite
+
+                while (!uriTask.isSuccessful() && !tiempoLimite) {
+                    if (System.currentTimeMillis() >= tiempoEspera) {
+                        tiempoLimite = true;
+                    }
+                    if (uriTask.isSuccessful() && !tiempoLimite) {
+                        uriTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                Toast.makeText(context, "URL obtenida correctamente", Toast.LENGTH_SHORT).show();
+                                callback.getDowloadUrl(uri.toString());
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.e("ErrorImagen", "Error al obtener la URL de descarga", e);
+                            }
+                        });
+                    }
+
+                }
+
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("ErrorImagen", "Se ha fallado al subir la imagen");
+            }
+        });
+    }
 
 
 }

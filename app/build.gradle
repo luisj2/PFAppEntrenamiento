@@ -30,6 +30,7 @@ android {
 }
 
 dependencies {
+    def lottieVersion = "3.4.0"
 
     //Acceder a multimedia
     implementation 'androidx.activity:activity:1.8.2'
@@ -43,11 +44,12 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     //firebase
-    implementation 'com.google.firebase:firebase-inappmessaging:20.4.1'
+    implementation 'com.google.firebase:firebase-inappmessaging:20.4.2'
     implementation platform('com.google.firebase:firebase-bom:32.7.4')
     implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.firebase:firebase-firestore:24.11.0' // Reemplaza con la última versión disponible
+    implementation 'com.google.firebase:firebase-firestore:24.11.1' // Reemplaza con la última versión disponible
     implementation 'com.google.firebase:firebase-auth:22.3.1'
+    implementation 'com.google.firebase:firebase-storage:20.3.0'
 
     //otras utils
     implementation 'de.hdodenhof:circleimageview:3.1.0'
@@ -61,5 +63,15 @@ dependencies {
 
     //ImagePicker
     implementation 'com.github.dhaval2404:imagepicker:2.1'
+
+    //Lottie (animaciones de carga)
+    implementation "com.airbnb.android:lottie:$lottieVersion"
+
+
+    //noinspection GradleCompatible
+    implementation 'com.android.support:design:28.0.0'
+
+
+
 
 }

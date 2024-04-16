@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.view.MenuItem;
 import com.example.fithealth.BarraSuperiorFragment;
+import com.example.fithealth.MenuEntrenamientoFragment;
 import com.example.fithealth.PantallasPrincipales.principales.Dieta.DietaFragment;
 import com.example.fithealth.PantallasPrincipales.principales.Entrenamiento.EntrenamientoFragment;
 import com.example.fithealth.PantallasPrincipales.principales.Home.HomeFragment;
@@ -19,7 +20,7 @@ public class ActivityPrincipal extends AppCompatActivity {
     //instacias de los fragment principales
     HomeFragment home;
     DietaFragment dieta;
-    EntrenamientoFragment entrenamiento;
+    MenuEntrenamientoFragment entrenamiento;
     SocialFragment social;
 
 
@@ -57,21 +58,12 @@ public class ActivityPrincipal extends AppCompatActivity {
             //la funcionalidad para cambiar el fragment del contentView segun al boton de la
             // barra de navegacion que de el usuario
             funcionalidadNavegacion();
-
-
-
-
-
-
-
-
-
     }
 
     private void inicializarComponentes() {
         home = new HomeFragment();
         dieta = new DietaFragment();
-        entrenamiento = new EntrenamientoFragment();
+        entrenamiento = new MenuEntrenamientoFragment();
         social = new SocialFragment();
 
         barraSuperior = new BarraSuperiorFragment(this.getApplicationContext());
@@ -108,6 +100,8 @@ public class ActivityPrincipal extends AppCompatActivity {
 
                 return seleccion;
             }
+
+            
         });
     }
 
