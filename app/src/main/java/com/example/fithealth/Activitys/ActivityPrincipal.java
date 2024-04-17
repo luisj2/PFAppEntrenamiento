@@ -6,11 +6,11 @@ import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.view.MenuItem;
 import com.example.fithealth.BarraSuperiorFragment;
-import com.example.fithealth.MenuEntrenamientoFragment;
+import com.example.fithealth.PantallasPrincipales.principales.Entrenamiento.MenuEntrenamientoFragment;
 import com.example.fithealth.PantallasPrincipales.principales.Dieta.DietaFragment;
-import com.example.fithealth.PantallasPrincipales.principales.Entrenamiento.EntrenamientoFragment;
 import com.example.fithealth.PantallasPrincipales.principales.Home.HomeFragment;
-import com.example.fithealth.PantallasPrincipales.principales.Social.SocialFragment;
+import com.example.fithealth.PantallasPrincipales.principales.Social.BusquedaSocial.MensajeriaFragment;
+import com.example.fithealth.PantallasPrincipales.principales.Social.MenuSocialFragment;
 import com.example.fithealth.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -18,10 +18,10 @@ public class ActivityPrincipal extends AppCompatActivity {
 
 
     //instacias de los fragment principales
-    HomeFragment home;
-    DietaFragment dieta;
-    MenuEntrenamientoFragment entrenamiento;
-    SocialFragment social;
+    Fragment primeraPantalla;
+    Fragment segundaPantalla;
+    Fragment terceraPantalla;
+    Fragment cuartaPantalla;
 
 
     public ActivityPrincipal(){}
@@ -52,7 +52,7 @@ public class ActivityPrincipal extends AppCompatActivity {
             //mostrar la barra superior
             getSupportFragmentManager().beginTransaction().replace(R.id.barraArribaFragmentView,barraSuperior).commit();
             //ponemos el fragment de home por defecto
-            setCurrentFragment(home);
+            setCurrentFragment(primeraPantalla);
 
 
             //la funcionalidad para cambiar el fragment del contentView segun al boton de la
@@ -61,10 +61,11 @@ public class ActivityPrincipal extends AppCompatActivity {
     }
 
     private void inicializarComponentes() {
-        home = new HomeFragment();
-        dieta = new DietaFragment();
-        entrenamiento = new MenuEntrenamientoFragment();
-        social = new SocialFragment();
+        primeraPantalla = new HomeFragment();
+        segundaPantalla = new DietaFragment();
+        terceraPantalla = new MenuEntrenamientoFragment();
+        cuartaPantalla = new MenuSocialFragment();
+
 
         barraSuperior = new BarraSuperiorFragment(this.getApplicationContext());
     }
@@ -84,24 +85,24 @@ public class ActivityPrincipal extends AppCompatActivity {
 
                 //ponemos el fragment que corresponda a partir del id siempre y cuando no sea el que hay actualmente
 
-               if(item.getItemId() == R.id.itemHome && !getFragmentoActual().equals(home)){ //ponemos el fragment de home
-                   setCurrentFragment(home);
+               if(item.getItemId() == R.id.itemHome && !getFragmentoActual().equals(primeraPantalla)){ //ponemos el fragment de home
+                   setCurrentFragment(primeraPantalla);
                    seleccion = true;
-               }else if(item.getItemId() == R.id.itemDieta && !getFragmentoActual().equals(dieta)){ //ponemos el fragment de dieta
-                   setCurrentFragment(dieta);
+               }else if(item.getItemId() == R.id.itemDieta && !getFragmentoActual().equals(segundaPantalla)){ //ponemos el fragment de dieta
+                   setCurrentFragment(segundaPantalla);
                    seleccion = true;
-               }else if(item.getItemId() == R.id.itemEntrenamiento && !getFragmentoActual().equals(entrenamiento)){ //ponemos el fragment de entrenamiento
-                    setCurrentFragment(entrenamiento);
+               }else if(item.getItemId() == R.id.itemEntrenamiento && !getFragmentoActual().equals(terceraPantalla)){ //ponemos el fragment de entrenamiento
+                    setCurrentFragment(terceraPantalla);
                     seleccion = true;
-               }else if(item.getItemId() == R.id.itemSocial && !getFragmentoActual().equals(social)){ // ponemos el fragment de social
-                    setCurrentFragment(social);
+               }else if(item.getItemId() == R.id.itemSocial && !getFragmentoActual().equals(cuartaPantalla)){ // ponemos el fragment de social
+                    setCurrentFragment(cuartaPantalla);
                     seleccion = true;
                }
 
                 return seleccion;
             }
 
-            
+
         });
     }
 

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.example.fithealth.AccederAplicacion.InicioSesion;
 import com.example.fithealth.PantallaCarga;
@@ -31,6 +32,11 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseAuthWebException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -58,6 +64,8 @@ public class FirebaseHelper {
     FirebaseFirestore fs;
     FirebaseAuth auth;
 
+    FirebaseDatabase realtimeDatabase;
+
     StorageReference storage;
     Context context;
 
@@ -77,6 +85,7 @@ public class FirebaseHelper {
         fs = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance().getReference();
+        realtimeDatabase = FirebaseDatabase.getInstance();
         this.context = context;
     }
 
@@ -84,6 +93,7 @@ public class FirebaseHelper {
         this.sesion = sesion;
         fs = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
+        realtimeDatabase = FirebaseDatabase.getInstance();
         this.context = context;
     }
 
@@ -114,6 +124,10 @@ public class FirebaseHelper {
 
     public interface UrlDescargada {
         void getDowloadUrl(String urlDescarga);
+    }
+
+    public interface IdUsuarioActual {
+        void getIdUsuario(String id);
     }
 
 
@@ -164,7 +178,11 @@ public class FirebaseHelper {
 
         fs.collection(COLECCION_USUARIOS).document(usuario.getId()).set(datosUsuario).addOnSuccessListener(aVoid -> {
                     // Éxito en la operación
+                    DatabaseReference reference = realtimeDatabase.getReference("usuarios").child(usuario.getId()).child("solicitudes_amistad");
+
                     Toast.makeText(context, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show();
+
+
                 })
                 .addOnFailureListener(e -> {
                     // Manejar el error
@@ -435,6 +453,14 @@ public class FirebaseHelper {
 
     }
 
+    public void getIdUsuarioActual(IdUsuarioActual callback) {
+
+        String id = auth.getCurrentUser().getUid();
+
+        callback.getIdUsuario(id);
+
+    }
+
     public void getUsuariosPorNombre(String nombre, CargaUsuarios listener) {
 
         fs.collection(COLECCION_USUARIOS).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -531,9 +557,6 @@ public class FirebaseHelper {
     }
 
 
-
-
-
     private int getResourcePrivacidad(String privacidad) {
         int resource = 0;
         if (privacidad.equals("Publico")) {
@@ -613,7 +636,78 @@ public class FirebaseHelper {
         });
     }
 
+    public void solicitudesAmistadlistener(String idusuario) {
+        DatabaseReference reference = realtimeDatabase.getReference("usuarios").child(idusuario).child("solicitudes_amistad");
+
+        reference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+    }
+
+    public void aniadirSolicitudAmistad(String idRemitente, String nombreDestinatario) {
+
+        DatabaseReference reference = realtimeDatabase.getReference("usuarios").child(idRemitente).child("solicitudes_amistad");
+        reference.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                reference.setValue(null);
+                String key = reference.push().getKey();
+
+                if (key != null) {
+                    Map<String, Object> solicitud = new HashMap<>();
+                    solicitud.put("nombre_usuario", nombreDestinatario);
+
+                    reference.child(key).setValue(solicitud)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(context, "Solicitud enviada", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Log.e("errorSolicitud", "error al mandar la solicitud " + task.getException());
+                                    }
+                                }
+                            });
+                }
+            }
+        });
+
+    }
+
+    public void prueba() {
+        DatabaseReference reference = realtimeDatabase.getReference();
+
+        reference.child("mensaje").setValue("hola").addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(context, "Finalizado", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
 }
-
-

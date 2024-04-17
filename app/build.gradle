@@ -44,12 +44,22 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     //firebase
-    implementation 'com.google.firebase:firebase-inappmessaging:20.4.2'
-    implementation platform('com.google.firebase:firebase-bom:32.7.4')
+    implementation platform("com.google.firebase:firebase-bom:32.8.0")
+
+// Mantén estas dependencias si las necesitas
     implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.firebase:firebase-firestore:24.11.1' // Reemplaza con la última versión disponible
-    implementation 'com.google.firebase:firebase-auth:22.3.1'
-    implementation 'com.google.firebase:firebase-storage:20.3.0'
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-storage'
+    implementation 'com.google.firebase:firebase-firestore'
+    implementation 'com.google.firebase:firebase-database'
+    implementation 'com.google.firebase:firebase-core:21.1.1'
+
+
+// Remueve estas dependencias y déjalas al BOM de Firebase
+// implementation("com.google.firebase:firebase-database")
+// implementation("com.google.firebase:firebase-core")
+
+
 
     //otras utils
     implementation 'de.hdodenhof:circleimageview:3.1.0'

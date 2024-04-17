@@ -1,4 +1,4 @@
-package com.example.fithealth;
+package com.example.fithealth.PantallasPrincipales.principales.Social;
 
 import android.net.Uri;
 

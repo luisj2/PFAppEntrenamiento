@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:layout_margin="4dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".MenuEntrenamientoFragment">
+    tools:context=".PantallasPrincipales.principales.Entrenamiento.MenuEntrenamientoFragment">
 
 
     <com.google.android.material.tabs.TabLayout

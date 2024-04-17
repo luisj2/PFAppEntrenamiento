@@ -47,7 +47,8 @@
         android:layout_gravity="center_vertical"
         android:background="@null"
         android:layout_weight="0.367"
-        android:textSize="30sp"/>
+        android:textSize="30sp"
+        android:padding="1dp"/>
 
 
 

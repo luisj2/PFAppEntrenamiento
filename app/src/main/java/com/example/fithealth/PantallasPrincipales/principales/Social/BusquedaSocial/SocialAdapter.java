@@ -8,11 +8,14 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.fithealth.Firebase.FirebaseHelper;
+import com.example.fithealth.PantallaCarga;
 import com.example.fithealth.R;
 import com.example.fithealth.Usuario.Usuario;
 
@@ -22,10 +25,14 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialViewHolder>{
 
     private List<Usuario> usuarios; //lista de usuarios que va a mostrar en la lista
 
+    private FirebaseHelper helper;
 
 
-    public SocialAdapter(List<Usuario> usuarios) {
+
+    public SocialAdapter(List<Usuario> usuarios, FirebaseHelper helper) {
         this.usuarios = usuarios;
+        this.helper = helper;
+
     }
 
     //Inflar la vista del adapter
@@ -34,7 +41,7 @@ public class SocialAdapter extends RecyclerView.Adapter<SocialViewHolder>{
     public SocialViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.social_usuarios_item,parent,false);
-        return new SocialViewHolder(view);
+        return new SocialViewHolder(view,helper);
     }
 
     //Funcionalidad del adapter
@@ -62,23 +69,42 @@ class SocialViewHolder extends RecyclerView.ViewHolder{
 
 
     //Items de la vista
-    TextView tvNombreUsuario;
+   private TextView tvNombreUsuario;
 
-    TextView tvHashtagUsuario;
+    private TextView tvHashtagUsuario;
 
-    ImageView ivIconoUsuario;
+    private ImageView ivIconoUsuario;
 
-    ImageButton btnAniadirAmigo;
-    public SocialViewHolder(@NonNull View itemView) {
+    private ImageButton btnAniadirAmigo;
+
+    private FirebaseHelper helper;
+
+    public SocialViewHolder(@NonNull View itemView,FirebaseHelper helper) {
         super(itemView);
 
+        this.helper = helper;
+
         enlazarComponentes(itemView);
+
+        funcionalidadSolicitudAmistad();
 
         Glide.with(itemView.getContext())
                 .load(R.drawable.ic_agregaramigo)
                 .fitCenter()
                 .into(btnAniadirAmigo);
 
+
+
+    }
+
+    private void funcionalidadSolicitudAmistad() {
+
+        btnAniadirAmigo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     private void enlazarComponentes(View view) {
@@ -103,7 +129,22 @@ class SocialViewHolder extends RecyclerView.ViewHolder{
         btnAniadirAmigo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("anidirAmigo","Has añadido a amigos a "+usuario.getNombreUnico());
+
+                helper = new FirebaseHelper(v.getContext());
+
+
+                helper.getIdUsuarioActual(new FirebaseHelper.IdUsuarioActual() {
+                    @Override
+                    public void getIdUsuario(String id) {
+
+                         helper.aniadirSolicitudAmistad(id,usuario.getNombreUnico());
+                        //helper.prueba();
+                    }
+                });
+
+
+
+
             }
         });
     }

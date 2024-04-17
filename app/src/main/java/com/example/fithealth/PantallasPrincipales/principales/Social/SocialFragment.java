@@ -98,7 +98,7 @@ public class SocialFragment extends Fragment {
     }
 
     private void crearAdapterBusquedaSocial(List<Usuario> usuarios) {
-        adapter = new SocialAdapter(usuarios);
+        adapter = new SocialAdapter(usuarios,helper);
         rvSocialUsuarios.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvSocialUsuarios.setAdapter(adapter);
     }

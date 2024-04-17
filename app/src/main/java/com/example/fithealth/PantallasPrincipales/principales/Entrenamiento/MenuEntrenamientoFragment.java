@@ -1,4 +1,4 @@
-package com.example.fithealth;
+package com.example.fithealth.PantallasPrincipales.principales.Entrenamiento;
 
 import android.os.Bundle;
 
@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 
 
 import com.example.fithealth.PantallasPrincipales.principales.Social.SocialFragment;
+import com.example.fithealth.R;
+import com.example.fithealth.ViewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 public class MenuEntrenamientoFragment extends Fragment {
@@ -29,7 +31,7 @@ public class MenuEntrenamientoFragment extends Fragment {
 
         enlazarComponentes(view);
 
-        ViewPagerAdapterEntrenamiento viewPagerAdapter = new ViewPagerAdapterEntrenamiento(getActivity().getSupportFragmentManager());
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
 
         viewPagerAdapter.addFragment(new SocialFragment(),"Social");
         viewPagerAdapter.addFragment(new DialogFragment(),"Comidas");

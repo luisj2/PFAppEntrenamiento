@@ -1,4 +1,4 @@
-package com.example.fithealth.PantallasPrincipales.principales.Entrenamiento;
+package com.example.fithealth;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,11 +9,11 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewPagerAdapterEntrenamiento extends FragmentPagerAdapter {
+public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     List<Fragment> fragments;
     List <String> titulos;
-    public ViewPagerAdapterEntrenamiento(@NonNull FragmentManager fm) {
+    public ViewPagerAdapter(@NonNull FragmentManager fm) {
         super(fm);
         fragments = new ArrayList<Fragment>();
         titulos = new ArrayList<String>();
