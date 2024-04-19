@@ -14,6 +14,8 @@ public class Contacto {
         this.rutaImagen = rutaImagen;
     }
 
+    public Contacto() {}
+
     public String getNombre() {
         return nombre;
     }

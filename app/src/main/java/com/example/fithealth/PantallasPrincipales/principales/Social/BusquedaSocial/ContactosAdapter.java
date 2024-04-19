@@ -30,6 +30,10 @@ public class ContactosAdapter extends RecyclerView.Adapter<ContactosHolder> {
         this.contactos = contactos;
     }
 
+    public void setContactos(List<Contacto> contactos) {
+        this.contactos = contactos;
+    }
+
     @NonNull
     @Override
     public ContactosHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

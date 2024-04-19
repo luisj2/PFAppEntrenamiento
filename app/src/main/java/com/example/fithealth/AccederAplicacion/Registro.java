@@ -1,12 +1,11 @@
 package com.example.fithealth.AccederAplicacion;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.fithealth.BaseDeDatos.Dao.DaoUsuario;
 import com.example.fithealth.BaseDeDatos.FitHealthDatabase;
@@ -14,21 +13,12 @@ import com.example.fithealth.BaseDeDatos.TablaUsuarios;
 import com.example.fithealth.Firebase.FirebaseHelper;
 import com.example.fithealth.Permisos.Permisos;
 import com.example.fithealth.R;
-import com.example.fithealth.Usuario.DatosUsuario;
 import com.example.fithealth.Usuario.Usuario;
 import com.example.fithealth.UtilsHelper;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.Firebase;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Registro extends AppCompatActivity {
 

@@ -44,7 +44,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     //firebase
-    implementation platform("com.google.firebase:firebase-bom:32.8.0")
+    implementation(platform("com.google.firebase:firebase-bom:32.7.3"))
 
 // Mantén estas dependencias si las necesitas
     implementation 'com.google.firebase:firebase-analytics'
@@ -52,6 +52,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage'
     implementation 'com.google.firebase:firebase-firestore'
     implementation 'com.google.firebase:firebase-database'
+    implementation 'com.google.gms:google-services:4.4.1'
     implementation 'com.google.firebase:firebase-core:21.1.1'
 
 

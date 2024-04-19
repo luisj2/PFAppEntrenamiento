@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,8 @@ import com.example.fithealth.AccederAplicacion.InicioSesion;
 import com.example.fithealth.PantallaCarga;
 import com.example.fithealth.PantallasPrincipales.principales.Entrenamiento.BuscarEjercicioData;
 import com.example.fithealth.Ejercicios.Ejercicio;
+import com.example.fithealth.PantallasPrincipales.principales.Social.Contacto;
+import com.example.fithealth.PantallasPrincipales.principales.Social.ListaAmigosAdapter;
 import com.example.fithealth.R;
 import com.example.fithealth.Usuario.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -62,9 +65,9 @@ import java.util.regex.Pattern;
 public class FirebaseHelper {
 
     FirebaseFirestore fs;
-    FirebaseAuth auth;
+    static FirebaseAuth auth;
 
-    FirebaseDatabase realtimeDatabase;
+    private static FirebaseDatabase realtimeDatabase;
 
     StorageReference storage;
     Context context;
@@ -85,7 +88,7 @@ public class FirebaseHelper {
         fs = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance().getReference();
-        realtimeDatabase = FirebaseDatabase.getInstance();
+        realtimeDatabase = FirebaseDatabase.getInstance("https://fithealthpf-default-rtdb.europe-west1.firebasedatabase.app/");
         this.context = context;
     }
 
@@ -93,7 +96,7 @@ public class FirebaseHelper {
         this.sesion = sesion;
         fs = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
-        realtimeDatabase = FirebaseDatabase.getInstance();
+        realtimeDatabase = FirebaseDatabase.getInstance("https://fithealthpf-default-rtdb.europe-west1.firebasedatabase.app/");
         this.context = context;
     }
 
@@ -128,6 +131,17 @@ public class FirebaseHelper {
 
     public interface IdUsuarioActual {
         void getIdUsuario(String id);
+    }
+
+    public interface ActualizarIUSnapshoot {
+        void contactoAniadido(DataSnapshot snapshot);
+
+        void contactoEliminado(DataSnapshot snapshot);
+    }
+
+    public interface ObtenerContactosAmigos {
+        void getAmigos(List <Contacto> contactos);
+
     }
 
 
@@ -453,7 +467,7 @@ public class FirebaseHelper {
 
     }
 
-    public void getIdUsuarioActual(IdUsuarioActual callback) {
+    public static void getIdUsuarioActual(IdUsuarioActual callback) {
 
         String id = auth.getCurrentUser().getUid();
 
@@ -636,12 +650,15 @@ public class FirebaseHelper {
         });
     }
 
-    public void solicitudesAmistadlistener(String idusuario) {
+    public void solicitudesAmistadlistener(String idusuario, ActualizarIUSnapshoot callback) {
         DatabaseReference reference = realtimeDatabase.getReference("usuarios").child(idusuario).child("solicitudes_amistad");
 
         reference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+
+                callback.contactoAniadido(snapshot);
 
             }
 
@@ -652,6 +669,8 @@ public class FirebaseHelper {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                callback.contactoEliminado(snapshot);
 
             }
 
@@ -668,6 +687,29 @@ public class FirebaseHelper {
 
 
     }
+
+    public static void eliminarSolicitudAmistad(String idEliminado, Context context) {
+        getIdUsuarioActual(new IdUsuarioActual() {
+            @Override
+            public void getIdUsuario(String id) {
+                DatabaseReference nodeRef = realtimeDatabase.getReference("usuarios").child(id).child("solicitudes_amistad").child(idEliminado);
+
+                nodeRef.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast toast = Toast.makeText(context, "Solicitud eliminada correctamente", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                    }
+                });
+
+
+            }
+        });
+
+    }
+
+
 
     public void aniadirSolicitudAmistad(String idRemitente, String nombreDestinatario) {
 
@@ -699,15 +741,73 @@ public class FirebaseHelper {
 
     }
 
-    public void prueba() {
-        DatabaseReference reference = realtimeDatabase.getReference();
+    public static void aniadirAmigoSolicitud(Contacto contacto) {
 
-        reference.child("mensaje").setValue("hola").addOnSuccessListener(new OnSuccessListener<Void>() {
+        getIdUsuarioActual(new IdUsuarioActual() {
             @Override
-            public void onSuccess(Void unused) {
-                Toast.makeText(context, "Finalizado", Toast.LENGTH_SHORT).show();
+            public void getIdUsuario(String id) {
+                DatabaseReference nodeRef = realtimeDatabase.getReference("usuarios").child(id).child("solicitudes_amistad").child(contacto.getId());
+
+                nodeRef.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        agregarAmigoFirebase(contacto);
+                    }
+                });
+
+
             }
         });
+
     }
+
+    private static void agregarAmigoFirebase(Contacto contacto){
+        DatabaseReference reference = realtimeDatabase.getReference("usuarios").child(contacto.getId()).child("amigos");
+
+        reference.child("nombre_usuario").setValue(contacto.getNombre());
+        if(contacto.getRutaImagen() != null){
+            reference.child("imagen_perfil").setValue(contacto.getRutaImagen().toString());
+        }else{
+            reference.child("imagen_perfil").setValue("");
+        }
+
+
+    }
+
+    public void escuchadorAmigos (String id,ActualizarIUSnapshoot callback){
+
+        DatabaseReference reference = realtimeDatabase.getReference("usuarios").child(id).child("amigos");
+
+        reference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                callback.contactoAniadido(snapshot);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                callback.contactoEliminado(snapshot);
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+
 
 }

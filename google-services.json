@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "945604944044",
+    "firebase_url": "https://fithealthpf-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "fithealthpf",
+    "storage_bucket": "fithealthpf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945604944044:android:428c5d18751deeef93bf09",
+        "android_client_info": {
+          "package_name": "com.example.fithealth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "945604944044-8flelvn5ftd6oh4orf2pam3l8lgaiqg4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGV5e_Z5oSS9j8KZg9lj6iZxvYC1XVx0k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "945604944044-8flelvn5ftd6oh4orf2pam3l8lgaiqg4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

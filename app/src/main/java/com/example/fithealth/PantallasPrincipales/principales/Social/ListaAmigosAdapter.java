@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.fithealth.Firebase.FirebaseHelper;
 import com.example.fithealth.R;
 
 import java.util.List;
@@ -21,9 +22,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ListaAmigosAdapter extends RecyclerView.Adapter<AmigosViewHolder> {
 
 
-    List <Contacto> solicitudesAmistad;
+    private List <Contacto> solicitudesAmistad;
 
     public ListaAmigosAdapter(List<Contacto> solicitudesAmistad) {
+        this.solicitudesAmistad = solicitudesAmistad;
+    }
+
+    public void setSolicitudesAmistad(List<Contacto> solicitudesAmistad) {
         this.solicitudesAmistad = solicitudesAmistad;
     }
 
@@ -44,11 +49,21 @@ public class ListaAmigosAdapter extends RecyclerView.Adapter<AmigosViewHolder> {
     public void onBindViewHolder(@NonNull AmigosViewHolder holder, int position) {
 
         Contacto contacto = solicitudesAmistad.get(position);
+
         holder.setTvNombreusuario(contacto.getNombre());
 
-        if(contacto.getRutaImagen() != null){
+
+
+
+        if(contacto.getRutaImagen() != null && !contacto.getRutaImagen().toString().isEmpty()){
             holder.setIconoUsuario(contacto.getRutaImagen());
         }
+
+        holder.funcionalidadRechazar(contacto.getId());
+
+        holder.funcionalidadAceptar(contacto);
+
+
 
     }
 
@@ -73,23 +88,23 @@ class AmigosViewHolder extends RecyclerView.ViewHolder{
         super(itemView);
         this.context = context;
         enlazarComponentes(itemView);
-        funcionalidadAceptar();
-        funcionalidadRechazar();
     }
 
-    private void funcionalidadRechazar() {
+    public void funcionalidadRechazar(String idEliminado) {
         btnRechazarSolicitud.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                FirebaseHelper.eliminarSolicitudAmistad(idEliminado,context);
             }
         });
     }
 
-    private void funcionalidadAceptar() {
+    public void funcionalidadAceptar(Contacto contacto) {
         btnAceptarSolicitud.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                FirebaseHelper.aniadirAmigoSolicitud(contacto);
 
             }
         });

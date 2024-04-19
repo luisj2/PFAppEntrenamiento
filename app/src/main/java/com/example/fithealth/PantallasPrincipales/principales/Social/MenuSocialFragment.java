@@ -3,6 +3,7 @@ package com.example.fithealth.PantallasPrincipales.principales.Social;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.ListFragment;
 import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
@@ -36,7 +37,8 @@ public class MenuSocialFragment extends Fragment {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
 
         viewPagerAdapter.addFragment(new MensajeriaFragment(),"Mensajes");
-        viewPagerAdapter.addFragment(new SocialFragment(),"Buscar \n Amigos");
+        viewPagerAdapter.addFragment(new SocialFragment(),"Buscar\nAmigos");
+        viewPagerAdapter.addFragment(new SolicitudesAmistadFragment(),"Solicitudes\nAmistad");
 
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
