@@ -7,7 +7,7 @@
     android:background="@color/white"
     android:clickable="false"
     android:visibility="visible"
-    tools:context=".AccederAplicacion.InicioSesion">
+    tools:context=".Activitys.AccederAplicacion.LoginActivity">
 
 
     <TextView
