@@ -7,6 +7,12 @@
     <color name="dorado">#7C6A32</color>
     <color name="verdeAceptar">#4CAF50</color>
     <color name="rojoRechazar">#BF1717</color>
+    <color name="fondo_mensajes">#95855E</color>
+    <color name="gris_dia">#757272</color>
+    <color name="fondo_oscuro">#222222</color>
+    <color name="secundary_color">#1E1E4C</color>
+    <color name="blue_link">#1F6181</color>
+    <color name="error_red">#9E1818</color>
 
 
 

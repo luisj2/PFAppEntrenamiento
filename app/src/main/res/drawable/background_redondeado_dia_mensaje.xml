@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Color de fondo (opcional) -->
+    <solid android:color="@color/fondo_oscuro" />
+
+    <!-- Radio de las esquinas -->
+    <corners android:radius="8dp" /> <!-- Puedes ajustar el radio según lo desees -->
+
+    <!-- Borde (opcional) -->
+    <stroke
+        android:width="1dp"
+    android:color="#CCCCCC" />
+</shape>
