@@ -100,22 +100,22 @@ class RegisterActivity : AppCompatActivity() {
 
 
     private fun isValidUser(authUser: AuthUser): Boolean {
+        return when{
+            isTextFieldsEmpty(authUser)->{
+                toast("Rellena todos los campos")
+                false
+            }
+            !isValidUserCredentials(authUser.userName)->{
+                toast("Nombre de usuario invalido")
+                false
+            }
 
-        if (isTextFieldsEmpty(authUser)) {
-            toast("Rellena todos los campos")
-            return false
+            !isValidEmailCredentials(authUser.email)->{
+                toast("Correo invalido")
+                false
+            }
+            else->true
         }
-        if (!isValidUserCredentials(authUser.userName)) {
-            toast("Nombre de usuario invalido")
-            return false
-        }
-
-        if (!isValidEmailCredentials(authUser.email)) {
-            toast("Correo invalido")
-            return false
-        }
-
-        return true
     }
 
     /*

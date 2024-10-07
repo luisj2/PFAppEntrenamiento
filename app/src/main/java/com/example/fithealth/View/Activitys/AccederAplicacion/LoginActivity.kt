@@ -56,10 +56,7 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        lifecycleScope.launch {
-            if (checkUserSessionStatus()) moveToActivity(MainActivity::class.java)
-            setupUI()
-        }
+        setupUI()
     }
 
     private fun setupUI() {

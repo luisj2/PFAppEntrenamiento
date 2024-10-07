@@ -15,25 +15,25 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.lifecycleScope
 import com.example.fithealth.Activitys.AccederAplicacion.RegisterActivity
 import com.example.fithealth.Model.Utils.ExtensionUtils.USER_SESSION_PREFERENCES_NAME
+import com.example.fithealth.Model.Utils.ExtensionUtils.checkUserSessionStatus
 import com.example.fithealth.Model.Utils.ExtensionUtils.moveToActivity
 import com.example.fithealth.R
 import com.example.fithealth.View.Activitys.AccederAplicacion.LoginActivity
 import com.google.firebase.FirebaseApp
+import kotlinx.coroutines.launch
 
 class SplahStartActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        moveToActivity(LoginActivity::class.java)
-        /*
-        Handler(Looper.getMainLooper()).postDelayed({
 
-           finish() // Finaliza la actividad Splash
-        }, 1000)
-
-         */
+        lifecycleScope.launch {
+            if (checkUserSessionStatus()) moveToActivity(MainActivity::class.java)
+            else moveToActivity(LoginActivity::class.java)
+        }
     }
 }
