@@ -3,10 +3,16 @@ package com.example.fithealth.View.ReyclerAdapters.Home.CalendarAdapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fithealth.Model.Utils.CalendarHelper
 import com.example.fithealth.databinding.ItemCalendarDayBinding
 
-class CalendarAdapter(private val dayList: List<String>) :
+class CalendarAdapter :
     RecyclerView.Adapter<CalendarViewHolder>() {
+
+    private val daysList = CalendarHelper.getDaysInMonthArray()
+    private val isCurrentMonth = CalendarHelper.isCurrentMonth()
+    private val todayDay = CalendarHelper.getTodayDay().toString()
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
         val binding =
@@ -14,9 +20,15 @@ class CalendarAdapter(private val dayList: List<String>) :
         return CalendarViewHolder(binding)
     }
 
-    override fun getItemCount(): Int = dayList.size
+    override fun getItemCount(): Int = daysList.size
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
-        holder.bind(dayList[position])
+        val dayItem = daysList[position]
+        holder.bind(dayItem,isToday(dayItem))
+
     }
+
+    private fun isToday(day: String): Boolean =
+        isCurrentMonth && day == todayDay
+
 }

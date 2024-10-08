@@ -34,4 +34,11 @@ object CalendarHelper {
     fun minusMonthSelectedDate() {
         selectedDate = selectedDate.minusMonths(1)
     }
+
+    fun isCurrentMonth(): Boolean {
+        val currentDate = LocalDate.now()
+        return currentDate.month == selectedDate.month && currentDate.year == selectedDate.year
+    }
+
+    fun getTodayDay() : Int = LocalDate.now().dayOfMonth
 }

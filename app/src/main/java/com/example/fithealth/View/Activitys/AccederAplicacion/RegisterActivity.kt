@@ -100,21 +100,23 @@ class RegisterActivity : AppCompatActivity() {
 
 
     private fun isValidUser(authUser: AuthUser): Boolean {
-        return when{
-            isTextFieldsEmpty(authUser)->{
+        return when {
+            isTextFieldsEmpty(authUser) -> {
                 toast("Rellena todos los campos")
                 false
             }
-            !isValidUserCredentials(authUser.userName)->{
+
+            !isValidUserCredentials(authUser.userName) -> {
                 toast("Nombre de usuario invalido")
                 false
             }
 
-            !isValidEmailCredentials(authUser.email)->{
+            !isValidEmailCredentials(authUser.email) -> {
                 toast("Correo invalido")
                 false
             }
-            else->true
+
+            else -> true
         }
     }
 
@@ -127,9 +129,9 @@ class RegisterActivity : AppCompatActivity() {
 
      */
 
-    private fun isTextFieldsEmpty(authUser: AuthUser): Boolean {
-        return authUser.userName.isEmpty() && authUser.password.isEmpty() && authUser.email.isEmpty()
-    }
+    private fun isTextFieldsEmpty(authUser: AuthUser): Boolean =
+        authUser.userName.isEmpty() && authUser.password.isEmpty() && authUser.email.isEmpty()
+
 
     private fun isValidUserCredentials(nombreUsuario: String): Boolean {
         val usernameRegex = "^[a-zA-Z0-9_]+$"

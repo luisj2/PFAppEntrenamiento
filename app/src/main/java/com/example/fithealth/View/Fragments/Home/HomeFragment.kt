@@ -17,9 +17,6 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +32,7 @@ class HomeFragment : Fragment() {
     private fun setupUI() {
         setupRecyclers()
         setupButtons()
-        binding.tvDayMonth.text = CalendarHelper.monthYearFromSelectedDate()
+        updateMonthView()
     }
 
     private fun setupButtons() {
@@ -48,6 +45,7 @@ class HomeFragment : Fragment() {
                 updateToNextMonth()
             }
         }
+
     }
 
     private fun updateToNextMonth() {
@@ -63,11 +61,10 @@ class HomeFragment : Fragment() {
     private fun setupRecyclers() {
         binding.rvCalendar.apply {
             layoutManager = GridLayoutManager(context, 7)
-            adapter = getCalendarAdapter()
         }
     }
 
-    private fun getCalendarAdapter() = CalendarAdapter(CalendarHelper.getDaysInMonthArray())
+    private fun getCalendarAdapter() = CalendarAdapter()
 
     private fun updateMonthView() {
         binding.apply {
