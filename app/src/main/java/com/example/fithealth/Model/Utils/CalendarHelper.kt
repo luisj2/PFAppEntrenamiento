@@ -40,5 +40,9 @@ object CalendarHelper {
         return currentDate.month == selectedDate.month && currentDate.year == selectedDate.year
     }
 
+    fun selectedDateToCurrentDate(){
+        selectedDate = LocalDate.now()
+    }
+
     fun getTodayDay() : Int = LocalDate.now().dayOfMonth
 }

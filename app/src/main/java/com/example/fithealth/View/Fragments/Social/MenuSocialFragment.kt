@@ -16,7 +16,7 @@ class MenuSocialFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_menu_social, container, false)
+
         /*
         val viewPagerAdapter = ViewPagerAdapter(activity!!.supportFragmentManager)
         viewPagerAdapter.addFragment(MensajeriaFragment(), "Mensajes")
@@ -25,7 +25,7 @@ class MenuSocialFragment : Fragment() {
         viewPager!!.adapter = viewPagerAdapter
         tabLayout!!.setupWithViewPager(viewPager)
          */
-        return view
+        return inflater.inflate(R.layout.fragment_menu_social, container, false)
     }
 
 

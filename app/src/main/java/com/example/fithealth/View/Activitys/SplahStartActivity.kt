@@ -32,8 +32,11 @@ class SplahStartActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
-            if (checkUserSessionStatus()) moveToActivity(MainActivity::class.java)
-            else moveToActivity(LoginActivity::class.java)
+            val nextActivity =
+                if (checkUserSessionStatus()) MainActivity::class.java else LoginActivity::class.java
+
+            moveToActivity(nextActivity)
+            finish()
         }
     }
 }

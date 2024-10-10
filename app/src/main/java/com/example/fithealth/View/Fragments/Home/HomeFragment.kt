@@ -31,11 +31,11 @@ class HomeFragment : Fragment() {
 
     private fun setupUI() {
         setupRecyclers()
-        setupButtons()
+        setupOnclicks()
         updateMonthView()
     }
 
-    private fun setupButtons() {
+    private fun setupOnclicks() {
         binding.apply {
             ibPreviousMonthButton.setOnClickListener {
                 updateToPreviousMonth()
@@ -43,6 +43,9 @@ class HomeFragment : Fragment() {
 
             ibForwardMonthButton.setOnClickListener {
                 updateToNextMonth()
+            }
+            tvDayMonth.setOnClickListener {
+                goCurrentMonth()
             }
         }
 
@@ -64,14 +67,18 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun getCalendarAdapter() = CalendarAdapter()
 
     private fun updateMonthView() {
         binding.apply {
             tvDayMonth.text = CalendarHelper.monthYearFromSelectedDate()
-            rvCalendar.adapter = getCalendarAdapter()
+            rvCalendar.adapter = CalendarAdapter()
         }
 
+    }
+
+    private fun goCurrentMonth() {
+        CalendarHelper.selectedDateToCurrentDate()
+        updateMonthView()
     }
 
     override fun onDestroy() {

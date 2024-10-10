@@ -4,25 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".View.Fragments.Social.SocialFragment">
+    tools:context=".View.Fragments.Social.SearchUsersFragment">
 
     <LinearLayout
-        android:id="@+id/linearBusqueda"
+        android:id="@+id/linearSearch"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:orientation="horizontal">
 
-        <SearchView
-            android:id="@+id/barraBusquedaSocial"
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etSearchUsers"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="16dp"
             android:layout_weight="1"
             app:layout_constraintEnd_toStartOf="@+id/btnBuscarUsuarioSocial"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/btnBuscarUsuarioSocial"
+            android:id="@+id/btnSearchUsers"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.4"
@@ -43,7 +45,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearBusqueda" />
+        app:layout_constraintTop_toBottomOf="@+id/linearSearch" />
 
 
 

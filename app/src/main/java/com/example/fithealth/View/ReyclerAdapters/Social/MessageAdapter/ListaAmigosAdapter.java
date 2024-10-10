@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.fithealth.Model.DataClass.Contacto;
-import com.example.fithealth.Model.Firebase.FirebaseHelper;
 import com.example.fithealth.R;
 
 import java.util.List;
@@ -39,7 +38,7 @@ public class ListaAmigosAdapter extends RecyclerView.Adapter<AmigosViewHolder> {
 
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.item_lista_amigos,parent,false);
+        View view = inflater.inflate(R.layout.item_user_request,parent,false);
 
 
 
@@ -90,7 +89,6 @@ class AmigosViewHolder extends RecyclerView.ViewHolder{
     public AmigosViewHolder(@NonNull View itemView,Context context) {
         super(itemView);
         this.context = context;
-        enlazarComponentes(itemView);
     }
 
     /*Ç
@@ -116,14 +114,7 @@ class AmigosViewHolder extends RecyclerView.ViewHolder{
 
      */
 
-    public void enlazarComponentes(View view){
 
-        btnAceptarSolicitud = view.findViewById(R.id.btnAceptarSolicitudAmistad);
-        btnRechazarSolicitud = view.findViewById(R.id.btnRechazarSolicitudAmistad);
-        tvNombreusuario = view.findViewById(R.id.tvNombreUsuarioSolicitud);
-        cvImagenUsuario = view.findViewById(R.id.cvImagenSolicitudAmistad);
-
-    }
 
     public void setTvNombreusuario(String nombre){
         tvNombreusuario.setText(nombre);

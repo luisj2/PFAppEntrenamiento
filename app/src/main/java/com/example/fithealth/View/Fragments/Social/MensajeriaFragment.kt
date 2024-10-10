@@ -9,14 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fithealth.Model.DataClass.Contacto
 import com.example.fithealth.Model.Firebase.FirebaseHelper
 import com.example.fithealth.R
-import com.example.fithealth.View.ReyclerAdapters.Social.MessageAdapter.BusquedaSocial.ContactosAdapter
+import com.example.fithealth.View.ReyclerAdapters.Social.MessageAdapter.BusquedaSocial.UserSearchAdapter
 
 class MensajeriaFragment : Fragment() {
     private var rvContactos: RecyclerView? = null
     private var amigos: MutableList<Contacto>? = null
    // private var sqlHelper: SqliteHelper? = null
     private var helper: FirebaseHelper? = null
-    private var adapter: ContactosAdapter? = null
+    private var adapter: UserSearchAdapter? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
