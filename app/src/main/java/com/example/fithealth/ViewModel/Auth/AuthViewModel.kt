@@ -90,6 +90,8 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
         }
     }
 
+
+
     private fun manageRegistrationError(error: Exception): String {
         return when (error) {
             is FirebaseAuthWeakPasswordException -> "Contraseña débil o no válida"

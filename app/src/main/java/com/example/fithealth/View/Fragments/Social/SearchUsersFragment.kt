@@ -1,6 +1,5 @@
 package com.example.fithealth.View.Fragments.Social
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,10 +12,11 @@ import com.example.fithealth.Model.DataClass.SearchUser
 import com.example.fithealth.Model.Utils.ExtensionUtils.dissmissLoadingScreen
 import com.example.fithealth.Model.Utils.ExtensionUtils.showLoadingScreen
 import com.example.fithealth.Model.Utils.ExtensionUtils.toast
-import com.example.fithealth.R
 import com.example.fithealth.View.ReyclerAdapters.Social.MessageAdapter.BusquedaSocial.UserSearchAdapter
-import com.example.fithealth.ViewModel.Auth.User.UserViewModel
-import com.example.fithealth.ViewModel.Auth.User.UserViewModelBuilder
+import com.example.fithealth.ViewModel.Auth.Firestore.User.UserFirestoreViewModel
+import com.example.fithealth.ViewModel.Auth.Firestore.User.UserFirestoreViewModelBuilder
+import com.example.fithealth.ViewModel.Auth.Realtime.User.UserRealtimeViewModel
+import com.example.fithealth.ViewModel.Auth.Realtime.User.UserRealtimeViewModelBuilder
 import com.example.fithealth.databinding.FragmentSearchUsersBinding
 
 class SearchUsersFragment : Fragment() {
@@ -25,8 +25,12 @@ class SearchUsersFragment : Fragment() {
     private var _binding: FragmentSearchUsersBinding? = null
     private val binding get() = _binding!!
 
-    private val userViewModel: UserViewModel by viewModels {
-        UserViewModelBuilder.getUserViewModelFactory()
+    private val userFirestoreViewModel: UserFirestoreViewModel by viewModels {
+        UserFirestoreViewModelBuilder.getUserViewModelFactory()
+    }
+
+    private val userRealtimeViewModel: UserRealtimeViewModel by viewModels {
+        UserRealtimeViewModelBuilder.getUserRealtimeViewModel()
     }
 
     override fun onCreateView(
@@ -51,19 +55,41 @@ class SearchUsersFragment : Fragment() {
             rvListaUsuarios.let { recycler ->
                 recycler.layoutManager = LinearLayoutManager(context)
 
-                recycler.adapter = UserSearchAdapter(emptyList()) {
-
+                recycler.adapter = UserSearchAdapter(emptyList()) { user ->
+                    sendUserRequest(user)
                 }
             }
 
         }
     }
 
+    private fun sendUserRequest(user: SearchUser) {
+        userRealtimeViewModel.sendRequest(user)
+    }
+
+
     private fun setupObversers() {
-        userViewModel.apply {
+        userFirestoreObservers()
+        userRealtimeObservers()
+    }
+
+    private fun userRealtimeObservers() {
+        userRealtimeViewModel.apply {
+            sendRequestStatus.observe(viewLifecycleOwner) { sendSuccess ->
+                if (sendSuccess) toast("Solicitud enviada correctamente")
+                else toast("Error al enviar la solicitud")
+            }
+            isLoading.observe(viewLifecycleOwner) { isLoading ->
+                handleLoadingScreen(isLoading)
+            }
+        }
+    }
+
+    private fun userFirestoreObservers() {
+        userFirestoreViewModel.apply {
 
             isLoading.observe(viewLifecycleOwner) { isLoading ->
-                if (isLoading) requireActivity().showLoadingScreen() else requireActivity().dissmissLoadingScreen()
+                handleLoadingScreen(isLoading)
             }
 
 
@@ -76,8 +102,14 @@ class SearchUsersFragment : Fragment() {
                     }
                 }
             }
-        }
 
+
+        }
+    }
+
+    private fun handleLoadingScreen(loading: Boolean) {
+        if (loading) requireActivity().showLoadingScreen()
+        else requireActivity().dissmissLoadingScreen()
     }
 
     private fun updateSearchUserList(userList: List<SearchUser>) {
@@ -95,13 +127,13 @@ class SearchUsersFragment : Fragment() {
     }
 
     private fun searchUsersByName(userName: String) {
-        userViewModel.getUserByName(userName)
+        userFirestoreViewModel.getUserByName(userName)
     }
 
     override fun onDestroyView() {
-        binding.etSearchUsers.setText("")
         super.onDestroyView()
-        userViewModel.clearSearchResults()
+        binding.etSearchUsers.setText("")
+        userFirestoreViewModel.clearSearchResults()
     }
 
     override fun onDestroy() {

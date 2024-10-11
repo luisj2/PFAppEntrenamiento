@@ -79,6 +79,7 @@ class AuthRepository(private val auth: FirebaseAuth, private val fs: FirebaseFir
         }
 
 
+
     suspend fun isUserExist(email: String): Boolean {
         return withContext(Dispatchers.IO) {
 
@@ -96,5 +97,7 @@ class AuthRepository(private val auth: FirebaseAuth, private val fs: FirebaseFir
             }
         }
     }
+
+
 
 }

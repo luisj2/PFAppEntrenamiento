@@ -27,7 +27,7 @@ import com.example.fithealth.Model.Utils.ExtensionUtils.dissmissLoadingScreen
 import com.example.fithealth.Model.Utils.ExtensionUtils.isStableConnection
 import com.example.fithealth.Model.Utils.ExtensionUtils.isValidEmailCredentials
 import com.example.fithealth.Model.Utils.ExtensionUtils.moveToActivity
-import com.example.fithealth.Model.Utils.ExtensionUtils.saveUserSessionTo
+import com.example.fithealth.Model.Utils.ExtensionUtils.saveUserSessionStatusTo
 import com.example.fithealth.Model.Utils.ExtensionUtils.setRequiredHelperText
 import com.example.fithealth.Model.Utils.ExtensionUtils.showLoadingScreen
 import com.example.fithealth.Model.Utils.ExtensionUtils.toast
@@ -37,6 +37,7 @@ import com.example.fithealth.ViewModel.Auth.AuthViewModel
 import com.example.fithealth.ViewModel.Auth.AuthViewModelBuilder
 import com.example.fithealth.databinding.ActivityLoginBinding
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -81,7 +82,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun logIn() {
         lifecycleScope.launch {
-            saveUserSessionTo(true)
+            saveUserSessionStatusTo(true)
             moveToActivity(MainActivity::class.java)
         }
     }

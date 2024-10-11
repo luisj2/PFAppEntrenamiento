@@ -81,6 +81,11 @@ class HomeFragment : Fragment() {
         updateMonthView()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        goCurrentMonth()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         _binding = null

@@ -11,9 +11,11 @@ import androidx.core.os.bundleOf
 import androidx.datastore.dataStore
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.fithealth.Model.Permissions.Permisos
 import com.example.fithealth.Model.Utils.DialogManager
 import com.example.fithealth.R
+import com.example.fithealth.ViewModel.Auth.AuthViewModel
 import com.example.fithealth.dataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -64,7 +66,7 @@ fun Activity.isStableConnection(): Boolean {
     return Permisos.conexionEstable(this)
 }
 
-suspend fun Activity.saveUserSessionTo(userSessionState: Boolean) {
+suspend fun Activity.saveUserSessionStatusTo(userSessionState: Boolean) {
     withContext(Dispatchers.IO) {
         applicationContext.dataStore.edit { preferences ->
             preferences[booleanPreferencesKey(USER_SESSION_KEY)] = userSessionState

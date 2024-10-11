@@ -1,16 +1,14 @@
-package com.example.fithealth.ViewModel.Auth.User
+package com.example.fithealth.ViewModel.Auth.Firestore.User
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fithealth.Model.DataClass.SearchUser
-import com.example.fithealth.Model.Firebase.User.UserQuery
-import com.example.fithealth.Model.Firebase.User.UserRepository
+import com.example.fithealth.Model.Firebase.Firestore.User.UserFirestoreRepository
 import kotlinx.coroutines.launch
 
-class UserViewModel(private val repository: UserRepository) : ViewModel() {
+class UserFirestoreViewModel(private val repository: UserFirestoreRepository) : ViewModel() {
 
     private val _userListByName = MutableLiveData<List<SearchUser>?>()
     val userListByName: LiveData<List<SearchUser>?> get() = _userListByName
