@@ -19,15 +19,11 @@ import androidx.lifecycle.lifecycleScope
 import com.example.fithealth.Activitys.AccederAplicacion.RegisterActivity
 import com.example.fithealth.Model.Firebase.FirebaseHelper
 import com.example.fithealth.Model.Permissions.Permisos
-import com.example.fithealth.Model.Utils.ExtensionUtils.USER_SESSION_KEY
-import com.example.fithealth.Model.Utils.ExtensionUtils.USER_SESSION_PREFERENCES_NAME
-import com.example.fithealth.Model.Utils.ExtensionUtils.checkUserSessionStatus
 import com.example.fithealth.Model.Utils.ExtensionUtils.clearHelperText
 import com.example.fithealth.Model.Utils.ExtensionUtils.dissmissLoadingScreen
 import com.example.fithealth.Model.Utils.ExtensionUtils.isStableConnection
 import com.example.fithealth.Model.Utils.ExtensionUtils.isValidEmailCredentials
 import com.example.fithealth.Model.Utils.ExtensionUtils.moveToActivity
-import com.example.fithealth.Model.Utils.ExtensionUtils.saveUserSessionStatusTo
 import com.example.fithealth.Model.Utils.ExtensionUtils.setRequiredHelperText
 import com.example.fithealth.Model.Utils.ExtensionUtils.showLoadingScreen
 import com.example.fithealth.Model.Utils.ExtensionUtils.toast
@@ -82,7 +78,6 @@ class LoginActivity : AppCompatActivity() {
 
     private fun logIn() {
         lifecycleScope.launch {
-            saveUserSessionStatusTo(true)
             moveToActivity(MainActivity::class.java)
         }
     }

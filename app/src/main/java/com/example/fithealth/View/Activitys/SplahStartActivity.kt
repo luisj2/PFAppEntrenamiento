@@ -17,13 +17,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
 import com.example.fithealth.Activitys.AccederAplicacion.RegisterActivity
-import com.example.fithealth.Model.Utils.ExtensionUtils.USER_SESSION_PREFERENCES_NAME
-import com.example.fithealth.Model.Utils.ExtensionUtils.checkUserSessionStatus
+import com.example.fithealth.Model.Utils.ExtensionUtils.REALTIME_USER_NODE
 import com.example.fithealth.Model.Utils.ExtensionUtils.moveToActivity
 import com.example.fithealth.R
 import com.example.fithealth.View.Activitys.AccederAplicacion.LoginActivity
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch
 
 class SplahStartActivity : AppCompatActivity() {
@@ -31,13 +31,10 @@ class SplahStartActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
-
-
         lifecycleScope.launch {
+
             val nextActivity =
-                if (checkUserSessionStatus()) MainActivity::class.java else LoginActivity::class.java
+                if (FirebaseAuth.getInstance().currentUser != null) MainActivity::class.java else LoginActivity::class.java
 
             moveToActivity(nextActivity)
             finish()

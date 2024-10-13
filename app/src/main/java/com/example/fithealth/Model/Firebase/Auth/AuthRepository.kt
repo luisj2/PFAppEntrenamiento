@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.fithealth.Model.DataClass.AuthUser
 import com.example.fithealth.Model.DataClass.FirestoreUser
 import com.example.fithealth.Model.Utils.ExtensionUtils.FIRESTORE_USERS_COLLECTION
+import com.example.fithealth.Model.Utils.ExtensionUtils.REALTIME_USER_NODE
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -11,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseAuthWebException
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +20,11 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import kotlin.math.log
 
-class AuthRepository(private val auth: FirebaseAuth, private val fs: FirebaseFirestore) :
+class AuthRepository(
+    private val auth: FirebaseAuth,
+    private val fs: FirebaseFirestore,
+    private val realtime: FirebaseDatabase
+) :
     LoginService, RegisterService {
 
 
@@ -41,6 +47,21 @@ class AuthRepository(private val auth: FirebaseAuth, private val fs: FirebaseFir
                     "error_firestore",
                     "El error es: ${e.message}"
                 )
+                false
+            }
+        }
+    }
+
+    override suspend fun registerUserInRealtime(id: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val reference = realtime.getReference(REALTIME_USER_NODE).child(id)
+
+                reference.setValue(null).await()
+
+                true
+            } catch (e: Exception) {
+                Log.e("realtime_error", "Error: ${e.message}", e)
                 false
             }
         }
@@ -79,7 +100,6 @@ class AuthRepository(private val auth: FirebaseAuth, private val fs: FirebaseFir
         }
 
 
-
     suspend fun isUserExist(email: String): Boolean {
         return withContext(Dispatchers.IO) {
 
@@ -97,7 +117,6 @@ class AuthRepository(private val auth: FirebaseAuth, private val fs: FirebaseFir
             }
         }
     }
-
 
 
 }

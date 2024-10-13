@@ -10,11 +10,13 @@ import com.example.fithealth.Model.Firebase.Auth.AuthRepository
 import com.example.fithealth.Model.Firebase.Auth.LoginService
 import com.example.fithealth.Model.Firebase.Auth.RegisterService
 import com.google.firebase.FirebaseTooManyRequestsException
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseAuthWebException
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.launch
 
@@ -40,10 +42,7 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
     fun registerUser(authUser: AuthUser) {
         viewModelScope.launch {
             try {
-                Log.i(
-                    "verificacion_usuario",
-                    "email: ${authUser.email} y contraseña: ${authUser.password}"
-                )
+
                 changeLoadingTo(true)
                 val userExist = repository.isUserExist(authUser.email)
                 if (!userExist) {
@@ -52,9 +51,15 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
                         repository.registerWithEmailAndPassword(authUser.email, authUser.password)
                     val registrationFirestoreSucess = repository.registerUserInFirestore(authUser)
 
+                    var registrationRealtimeSuccess = false
+                    if (registrationEmailPasswordSuccess) registrationRealtimeSuccess =
+                        repository.registerUserInRealtime(
+                            FirebaseAuth.getInstance().uid!!
+                        )
+
                     _registerUserState.value =
                         registrationEmailPasswordSuccess &&
-                                registrationFirestoreSucess
+                                registrationFirestoreSucess && registrationRealtimeSuccess
                 } else {
                     _registerUserState.value = false
                 }
@@ -89,7 +94,6 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
             }
         }
     }
-
 
 
     private fun manageRegistrationError(error: Exception): String {

@@ -46,6 +46,7 @@ dependencies {
 
     // Acceder a multimedia
     implementation 'androidx.activity:activity-ktx:1.9.2'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
     // Otros
     implementation 'androidx.appcompat:appcompat:1.7.0'

@@ -16,7 +16,6 @@ import com.example.fithealth.Model.Permissions.Permisos
 import com.example.fithealth.Model.Utils.DialogManager
 import com.example.fithealth.R
 import com.example.fithealth.ViewModel.Auth.AuthViewModel
-import com.example.fithealth.dataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
@@ -66,18 +65,4 @@ fun Activity.isStableConnection(): Boolean {
     return Permisos.conexionEstable(this)
 }
 
-suspend fun Activity.saveUserSessionStatusTo(userSessionState: Boolean) {
-    withContext(Dispatchers.IO) {
-        applicationContext.dataStore.edit { preferences ->
-            preferences[booleanPreferencesKey(USER_SESSION_KEY)] = userSessionState
-        }
-    }
-}
-
-suspend fun Activity.checkUserSessionStatus(): Boolean {
-    return withContext(Dispatchers.IO) {
-        val preferences = applicationContext.dataStore.data.first()
-        preferences[booleanPreferencesKey(USER_SESSION_KEY)] ?: false
-    }
-}
 

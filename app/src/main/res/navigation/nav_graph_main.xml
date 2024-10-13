@@ -21,7 +21,7 @@
         tools:layout="@layout/fragment_entrenamiento" />
     <fragment
         android:id="@+id/socialFragment"
-        android:name="com.example.fithealth.View.Fragments.Social.SearchUsersFragment"
+        android:name="com.example.fithealth.View.Fragments.Social.SolicitudesAmistadFragment"
         android:label="fragment_social"
         tools:layout="@layout/fragment_solicitudes_amistad" />
 </navigation>
