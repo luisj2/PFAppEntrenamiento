@@ -1,16 +1,9 @@
 package com.example.fithealth.Activitys.AccederAplicacion
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import com.example.fithealth.Model.Firebase.FirebaseHelper
 import com.example.fithealth.Model.DataClass.AuthUser
-import com.example.fithealth.Model.Firebase.FirebaseResult
-import com.example.fithealth.Model.Permissions.Permisos
-import com.example.fithealth.Model.Utils.ExtensionUtils.dialog
 import com.example.fithealth.Model.Utils.ExtensionUtils.dissmissLoadingScreen
 import com.example.fithealth.Model.Utils.ExtensionUtils.isStableConnection
 import com.example.fithealth.Model.Utils.ExtensionUtils.isValidEmailCredentials
@@ -21,14 +14,9 @@ import com.example.fithealth.View.Activitys.AccederAplicacion.LoginActivity
 import com.example.fithealth.ViewModel.Auth.AuthViewModel
 import com.example.fithealth.ViewModel.Auth.AuthViewModelBuilder
 import com.example.fithealth.databinding.ActivityRegisterBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.regex.Pattern
 
 class RegisterActivity : AppCompatActivity() {
-
-    //private lateinit var firebaseHelper: FirebaseHelper
 
     private lateinit var binding: ActivityRegisterBinding
 
@@ -36,12 +24,12 @@ class RegisterActivity : AppCompatActivity() {
         AuthViewModelBuilder.getAuthViewModelFactory()
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //firebaseHelper = FirebaseHelper(this)
         setupUI()
     }
 
@@ -93,9 +81,14 @@ class RegisterActivity : AppCompatActivity() {
 
                 val authUser = AuthUser(newName, newPassword, email)
 
-                if (isValidUser(authUser)) authViewModel.registerUser(authUser)
+                if (isValidUser(authUser)) register(authUser)
             }
         }
+    }
+
+
+    private fun register(authUser: AuthUser) {
+        authViewModel.registerUser(authUser)
     }
 
 
@@ -120,14 +113,6 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    /*
-    private suspend fun registerUserInRealtimeDatabase() {
-        withContext(Dispatchers.IO) {
-            firebaseHelper.registerUserInRealtimeDatabase()
-        }
-    }
-
-     */
 
     private fun isTextFieldsEmpty(authUser: AuthUser): Boolean =
         authUser.userName.isEmpty() && authUser.password.isEmpty() && authUser.email.isEmpty()
@@ -139,7 +124,5 @@ class RegisterActivity : AppCompatActivity() {
         val matcher = pattern.matcher(nombreUsuario)
         return matcher.matches()
     }
-
-
 }
 

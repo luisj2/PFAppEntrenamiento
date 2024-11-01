@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.fithealth.Model.DataClass.SearchUser
+import com.example.fithealth.Model.DataClass.UserSearch
 import com.example.fithealth.Model.Utils.ExtensionUtils.dissmissLoadingScreen
 import com.example.fithealth.Model.Utils.ExtensionUtils.showLoadingScreen
 import com.example.fithealth.Model.Utils.ExtensionUtils.toast
@@ -63,7 +63,7 @@ class SearchUsersFragment : Fragment() {
         }
     }
 
-    private fun sendUserRequest(user: SearchUser) {
+    private fun sendUserRequest(user: UserSearch) {
         userRealtimeViewModel.sendRequest(user)
     }
 
@@ -112,7 +112,7 @@ class SearchUsersFragment : Fragment() {
         else requireActivity().dissmissLoadingScreen()
     }
 
-    private fun updateSearchUserList(userList: List<SearchUser>) {
+    private fun updateSearchUserList(userList: List<UserSearch>) {
         val adapter = binding.rvListaUsuarios.adapter as UserSearchAdapter
         adapter.updateList(userList)
     }

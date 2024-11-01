@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android' // Plugin para Kotlin
     id 'com.google.gms.google-services'
+    id("kotlin-kapt")
 }
 
 android {
@@ -43,9 +44,10 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.13.1'
     def lottieVersion = "3.4.0"
     def navVersion = "2.8.2"
+    def room_version ="2.6.0"
 
     // Acceder a multimedia
-    implementation 'androidx.activity:activity-ktx:1.9.2'
+    implementation 'androidx.activity:activity-ktx:1.9.3'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
     // Otros
@@ -66,6 +68,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage'
     implementation 'com.google.firebase:firebase-firestore'
     implementation 'com.google.firebase:firebase-database'
+    implementation 'com.google.firebase:firebase-messaging-ktx:24.0.3'
 
 
 
@@ -79,8 +82,12 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
     // Room
-    implementation "androidx.room:room-runtime:2.6.1"
-    annotationProcessor "androidx.room:room-compiler:2.6.1" // Detectar anotaciones de Room
+    implementation ("androidx.room:room-ktx:$room_version")
+    implementation ("androidx.room:room-runtime:$room_version")
+
+    kapt("androidx.room:room-compiler:$room_version")
+
+    //annotationProcessor "androidx.room:room-compiler:2.6.1" // Detectar anotaciones de Room
 
     // Glide
     implementation 'com.github.bumptech.glide:glide:4.16.0'
@@ -91,5 +98,4 @@ dependencies {
     // Lottie (animaciones de carga)
     implementation "com.airbnb.android:lottie:$lottieVersion"
 
-    // Remover dependencia de 'com.android.support:design' ya que no es necesario.
 }

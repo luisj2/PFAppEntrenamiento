@@ -1,24 +1,11 @@
 package com.example.fithealth.View.Activitys.AccederAplicacion
 
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isEmpty
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import androidx.lifecycle.lifecycleScope
 import com.example.fithealth.Activitys.AccederAplicacion.RegisterActivity
-import com.example.fithealth.Model.Firebase.FirebaseHelper
-import com.example.fithealth.Model.Permissions.Permisos
 import com.example.fithealth.Model.Utils.ExtensionUtils.clearHelperText
 import com.example.fithealth.Model.Utils.ExtensionUtils.dissmissLoadingScreen
 import com.example.fithealth.Model.Utils.ExtensionUtils.isStableConnection
@@ -27,18 +14,17 @@ import com.example.fithealth.Model.Utils.ExtensionUtils.moveToActivity
 import com.example.fithealth.Model.Utils.ExtensionUtils.setRequiredHelperText
 import com.example.fithealth.Model.Utils.ExtensionUtils.showLoadingScreen
 import com.example.fithealth.Model.Utils.ExtensionUtils.toast
-import com.example.fithealth.R
 import com.example.fithealth.View.Activitys.MainActivity
 import com.example.fithealth.ViewModel.Auth.AuthViewModel
 import com.example.fithealth.ViewModel.Auth.AuthViewModelBuilder
+import com.example.fithealth.ViewModel.Auth.Firestore.User.UserFirestoreViewModel
+import com.example.fithealth.ViewModel.Auth.Firestore.User.UserFirestoreViewModelBuilder
+import com.example.fithealth.ViewModel.Local_Database.User.UserDatabaseViewModel
+import com.example.fithealth.ViewModel.Local_Database.User.UserDatabaseViewModelBuilder
+import com.example.fithealth.ViewModel.Messaging.FirebaseMessagingViewModel
+import com.example.fithealth.ViewModel.Messaging.FirebaseMessagingViewModelBuilder
 import com.example.fithealth.databinding.ActivityLoginBinding
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-
 
 class LoginActivity : AppCompatActivity() {
 
@@ -47,6 +33,20 @@ class LoginActivity : AppCompatActivity() {
     private val authViewModel: AuthViewModel by viewModels {
         AuthViewModelBuilder.getAuthViewModelFactory()
     }
+
+    private val userFirestoreViewModel: UserFirestoreViewModel by viewModels {
+        UserFirestoreViewModelBuilder.getUserViewModelFactory()
+    }
+
+
+    private val userDatabaseViewModel: UserDatabaseViewModel by viewModels {
+        UserDatabaseViewModelBuilder.getUserDatabaseViewModelFactory(this)
+    }
+
+    private val messagingViewModel: FirebaseMessagingViewModel by viewModels {
+        FirebaseMessagingViewModelBuilder.getFirebaseMessageViewModel()
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,12 +62,41 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
+        authObservers()
+        userFirestoreObservers()
+        userLocalDatabaseObservers()
+    }
+
+    private fun userLocalDatabaseObservers() {
+
+        userDatabaseViewModel.apply {
+            inserUserStatus.observe(this@LoginActivity) { insertUserStatus ->
+                if (insertUserStatus) Log.i("infoUserDatabase", "usuario insertado correctamente")
+                else Log.i("infoUserDatabase", "usuario no se ha insertado")
+            }
+        }
+
+
+    }
+
+    private fun userFirestoreObservers() {
+
+        userFirestoreViewModel.apply {
+            completeLoggedUser.observe(this@LoginActivity) { user ->
+                if (user != null) userDatabaseViewModel.inserUser(user)
+            }
+        }
+    }
+
+    private fun authObservers() {
         authViewModel.apply {
             logInErrorMessage.observe(this@LoginActivity) { error -> toast(error) }
 
             logInUserState.observe(this@LoginActivity) { logInSuccess ->
-                if (logInSuccess) logIn()
-                else toast("Error al iniciar sesion o el usuario no existe")
+                if (logInSuccess) {
+                    logIn()
+                    registerUserInLocalDatabase()
+                } else toast("Error al iniciar sesion o el usuario no existe")
 
             }
             isLoading.observe(this@LoginActivity) { isLoading ->
@@ -76,8 +105,17 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private fun registerUserInLocalDatabase() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+
+        if (uid != null) {
+            userFirestoreViewModel.getCompleteLoggedUserById(uid)
+        }
+    }
+
     private fun logIn() {
-        lifecycleScope.launch {
+        messagingViewModel.getToken() { token ->
+            if (token != null) userFirestoreViewModel.insertToken(token)
             moveToActivity(MainActivity::class.java)
         }
     }

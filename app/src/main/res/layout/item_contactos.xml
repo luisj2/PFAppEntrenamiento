@@ -7,20 +7,23 @@
     android:orientation="horizontal"
     android:layout_marginBottom="15dp">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/cvImagenPerfil"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/ic_logo_contacto"
-        android:layout_marginEnd="15dp"
-        app:civ_border_width="2dp"
-        app:civ_border_color="@color/black"
-        />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/cvImagenPerfil"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_logo_contacto"
+            android:layout_marginEnd="15dp"
+            app:civ_border_width="2dp"
+            app:civ_border_color="@color/black"
+            />
     <TextView
         android:id="@+id/tvNombreContacto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:textSize="18sp"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
         tools:text="Luis Je"
         android:layout_gravity="center"/>
 </LinearLayout>

@@ -1,50 +1,11 @@
 package com.example.fithealth.Model.Firebase
 
 import android.content.Context
-import android.net.Uri
-import android.os.Build
-import android.util.Log
-import android.view.Gravity
-import android.widget.Toast
-import com.example.fithealth.Model.DataClass.Ejercicio
-import com.example.fithealth.Model.DataClass.Fecha
-import com.example.fithealth.Model.DataClass.Mensaje
-import com.example.fithealth.Model.DataClass.SearchExerciseData
-import com.example.fithealth.Model.DataClass.Contacto
-import com.example.fithealth.Model.DataClass.AuthUser
-import com.example.fithealth.Model.DataClass.FirestoreUser
-import com.example.fithealth.R
-import com.example.fithealth.Model.Utils.ExtensionUtils.toast
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.OnSuccessListener
-import com.google.android.gms.tasks.Task
-import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthInvalidUserException
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
-import com.google.firebase.auth.FirebaseAuthWebException
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.QueryDocumentSnapshot
-import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.UploadTask
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.util.Locale
 
 class FirebaseHelper(var context: Context) {
 

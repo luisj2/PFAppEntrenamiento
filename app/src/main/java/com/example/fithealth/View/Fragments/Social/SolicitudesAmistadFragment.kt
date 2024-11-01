@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.fithealth.FitHealthApp
-import com.example.fithealth.Model.DataClass.SearchUser
+import com.example.fithealth.Model.DataClass.UserSearch
 import com.example.fithealth.Model.Utils.ExtensionUtils.dissmissLoadingScreen
+import com.example.fithealth.Model.Utils.ExtensionUtils.isStableConnection
 import com.example.fithealth.Model.Utils.ExtensionUtils.showLoadingScreen
 import com.example.fithealth.Model.Utils.ExtensionUtils.toast
 import com.example.fithealth.View.ReyclerAdapters.Social.MessageAdapter.FriendRequest.FriendRequestAdapter
@@ -18,6 +18,8 @@ import com.example.fithealth.ViewModel.Auth.Firestore.User.UserFirestoreViewMode
 import com.example.fithealth.ViewModel.Auth.Firestore.User.UserFirestoreViewModelBuilder
 import com.example.fithealth.ViewModel.Auth.Realtime.User.UserRealtimeViewModel
 import com.example.fithealth.ViewModel.Auth.Realtime.User.UserRealtimeViewModelBuilder
+import com.example.fithealth.ViewModel.Local_Database.User.UserDatabaseViewModel
+import com.example.fithealth.ViewModel.Local_Database.User.UserDatabaseViewModelBuilder
 import com.example.fithealth.databinding.FragmentSolicitudesAmistadBinding
 
 class SolicitudesAmistadFragment : Fragment() {
@@ -34,7 +36,11 @@ class SolicitudesAmistadFragment : Fragment() {
         UserFirestoreViewModelBuilder.getUserViewModelFactory()
     }
 
-    private var loggedUser: SearchUser? = null
+    private val userDatabaseViewModel: UserDatabaseViewModel by viewModels {
+        UserDatabaseViewModelBuilder.getUserDatabaseViewModelFactory(requireContext())
+    }
+
+    private var loggedUser: UserSearch? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,13 +82,21 @@ class SolicitudesAmistadFragment : Fragment() {
         binding.refreshLayout.isRefreshing = refreshingStatus
     }
 
-    private fun isRefreshing(): Boolean {
-        return binding.refreshLayout.isRefreshing
-    }
+    private fun isRefreshing(): Boolean = binding.refreshLayout.isRefreshing
 
     private fun setupObservers() {
         setupFirestoreObservers()
         setupRealtimeObservers()
+        setupLocalDatabaseObservers()
+    }
+
+    private fun setupLocalDatabaseObservers() {
+        userDatabaseViewModel.apply {
+            inserContactStatus.observe(viewLifecycleOwner) {
+                if (it) Log.i("insertar_baseDatos", "insertado correctamente")
+                else Log.i("insertar_baseDatos", "No insertado correctamente")
+            }
+        }
     }
 
     private fun setupFirestoreObservers() {
@@ -115,8 +129,9 @@ class SolicitudesAmistadFragment : Fragment() {
             }
 
             agreeFriendStatus.observe(viewLifecycleOwner) { agreeFriendStatus ->
-                if (agreeFriendStatus) toast("Amigo añadido correctamente")
-                else toast("Error al aceptar la solicitud")
+                if (agreeFriendStatus) {
+                    toast("Amigo añadido correctamente")
+                } else toast("Error al aceptar la solicitud")
             }
 
             agreePending.observe(viewLifecycleOwner) { user ->
@@ -140,7 +155,7 @@ class SolicitudesAmistadFragment : Fragment() {
         userRealtimeViewModel.getUserRequests()
     }
 
-    private fun updateToItemsRequestList(userRequestList: List<SearchUser>) {
+    private fun updateToItemsRequestList(userRequestList: List<UserSearch>) {
         noRequestsVisibility(false)
         updateRequestList(userRequestList)
     }
@@ -151,7 +166,7 @@ class SolicitudesAmistadFragment : Fragment() {
         updateRequestList(emptyList())
     }
 
-    private fun updateRequestList(userRequestList: List<SearchUser>) {
+    private fun updateRequestList(userRequestList: List<UserSearch>) {
         val adapter = binding.rvRequestList.adapter as FriendRequestAdapter
         adapter.updateList(userRequestList)
     }
@@ -178,11 +193,19 @@ class SolicitudesAmistadFragment : Fragment() {
     }
 
     private fun rejectFriendRequest(id: String) {
-        userRealtimeViewModel.removeUserRequest(id)
+        if (isStableConnection()) userRealtimeViewModel.removeUserRequest(id)
     }
 
-    private fun acceptFriendRequest(userToAgree: SearchUser) {
-        if (loggedUser != null) userRealtimeViewModel.agreeFriend(userToAgree, loggedUser!!)
-        else toast("Ocurrio un problema al añadir al usuario")
+    private fun acceptFriendRequest(userToAgree: UserSearch) {
+        if (isStableConnection() && loggedUser != null) {
+            userRealtimeViewModel.agreeFriend(userToAgree, loggedUser!!)
+            userDatabaseViewModel.insertContact(userToAgree, loggedUser!!.contactId)
+        } else toast("Ocurrio un problema comprueba tu conexion")
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

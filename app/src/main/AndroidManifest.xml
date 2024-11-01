@@ -10,6 +10,7 @@
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -21,8 +22,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FitHealth"
         tools:targetApi="31">
+
+        <service
+            android:name=".Model.Services.MessagesService"
+            android:exported="true"
+            tools:ignore="Instantiatable">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+
         <activity
-            android:name=".View.Activitys.Social.MensajesActivity"
+            android:name=".View.Activitys.Social.MessageActivity"
             android:exported="false" />
         <activity
             android:name=".View.Activitys.Training.SearchExerciseActivity"
