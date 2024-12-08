@@ -7,15 +7,4 @@ import com.google.firebase.messaging.RemoteMessage
 class MessagesService(private val context: Context) : FirebaseMessagingService() {
 
 
-
-    override fun onCreate() {
-        super.onCreate()
-
-    }
-
-    override fun onMessageReceived(message: RemoteMessage) {
-        super.onMessageReceived(message)
-
-    }
-
 }

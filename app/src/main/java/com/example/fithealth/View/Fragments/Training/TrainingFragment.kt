@@ -9,11 +9,6 @@ import com.example.fithealth.R
 
 class TrainingFragment : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-       // rutinas = ArrayList(mutableListOf("Pecho", "Espalda"))
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

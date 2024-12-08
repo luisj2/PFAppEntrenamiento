@@ -1,9 +1,9 @@
 package com.example.fithealth.Model.Utils.ExtensionUtils
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.example.fithealth.Model.Permissions.Permisos
@@ -20,6 +20,14 @@ fun Fragment.dialog(title: String, message: String) {
 
 fun Fragment.moveToActivity(targetClass: Class<*>, bundle: Bundle = bundleOf()) {
     startActivity(Intent(requireContext(), targetClass).putExtras(bundle))
+}
+
+fun Fragment.moveToActivityWithResult(
+    tarjetActivity: Class<*>,
+    activityResultLauncher: ActivityResultLauncher<Intent>,
+    bundle: Bundle = bundleOf()
+) {
+    activityResultLauncher.launch(Intent(requireContext(), tarjetActivity).putExtras(bundle))
 }
 
 fun Fragment.isStableConnection(): Boolean = Permisos.conexionEstable(requireContext())

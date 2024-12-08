@@ -18,7 +18,7 @@ import java.util.List;
 
 public class AdapterSpinnerCustom extends ArrayAdapter<TipoEjercicioIconos> {
 
-    private List <TipoEjercicioIconos> textImagenList;
+    private final List <TipoEjercicioIconos> textImagenList;
 
     LayoutInflater inflater;
 

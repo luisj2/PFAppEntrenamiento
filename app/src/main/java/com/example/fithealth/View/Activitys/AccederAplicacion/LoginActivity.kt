@@ -114,7 +114,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun logIn() {
-        messagingViewModel.getToken() { token ->
+        messagingViewModel.getToken { token ->
             if (token != null) userFirestoreViewModel.insertToken(token)
             moveToActivity(MainActivity::class.java)
         }

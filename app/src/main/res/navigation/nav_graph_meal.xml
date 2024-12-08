@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_graph_meal">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_meal"
+    app:startDestination="@id/searchFoodFragment">
 
+    <fragment
+        android:id="@+id/registerFoodFragment"
+        android:name="com.example.fithealth.View.Fragments.Meal.RegisterFoodFragment"
+        android:label="fragment_register_food"
+        tools:layout="@layout/fragment_register_food" />
+    <fragment
+        android:id="@+id/saveMealsFragment"
+        android:name="com.example.fithealth.View.Fragments.Meal.SaveMealsFragment"
+        android:label="fragment_save_meals"
+        tools:layout="@layout/fragment_save_meals" />
+    <fragment
+        android:id="@+id/searchFoodFragment"
+        android:name="com.example.fithealth.View.Fragments.Meal.SearchFoodFragment"
+        android:label="fragment_search_food"
+        tools:layout="@layout/fragment_search_food" />
 </navigation>

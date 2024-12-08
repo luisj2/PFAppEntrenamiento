@@ -4,17 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.fithealth.Model.Utils.CalendarHelper
 import com.example.fithealth.Model.Utils.ExtensionUtils.moveToActivity
-import com.example.fithealth.R
 import com.example.fithealth.View.Activitys.AccederAplicacion.LoginActivity
 import com.example.fithealth.View.ReyclerAdapters.Home.CalendarAdapter.CalendarAdapter
 import com.example.fithealth.databinding.FragmentHomeBinding
 import com.google.firebase.auth.FirebaseAuth
-import java.time.LocalDate
 
 class HomeFragment : Fragment() {
 
@@ -36,6 +33,7 @@ class HomeFragment : Fragment() {
         setupRecyclers()
         setupOnclicks()
         updateMonthView()
+        goCurrentMonth()
     }
 
     private fun setupOnclicks() {
@@ -48,7 +46,6 @@ class HomeFragment : Fragment() {
                 updateToNextMonth()
             }
             tvDayMonth.setOnClickListener {
-                //logOut()
                 goCurrentMonth()
             }
         }
@@ -88,11 +85,6 @@ class HomeFragment : Fragment() {
     private fun goCurrentMonth() {
         CalendarHelper.selectedDateToCurrentDate()
         updateMonthView()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        goCurrentMonth()
     }
 
     override fun onDestroy() {

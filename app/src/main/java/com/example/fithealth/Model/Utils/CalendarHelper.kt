@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter
 
 object CalendarHelper {
 
-    private var selectedDate: LocalDate = LocalDate.now()
+    var selectedDate: LocalDate = LocalDate.now()
 
     fun getDaysInMonthArray(): List<String> {
         val yearMonth = YearMonth.from(selectedDate)
@@ -27,6 +27,24 @@ object CalendarHelper {
         return formatter.format(selectedDate).uppercase()
     }
 
+    fun getSelectedDateToDayMonthYear(): String {
+        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+        return selectedDate.format(formatter)
+    }
+
+    fun getSelectedDateInDayMonthYear(): LocalDate = LocalDate.of(
+        selectedDate.year, selectedDate.month,
+        selectedDate.dayOfMonth
+    )
+
+    fun plusDaySelectedDate() {
+        selectedDate = selectedDate.plusDays(1)
+    }
+
+    fun minusDaySelectedDate() {
+        selectedDate = selectedDate.minusDays(1)
+    }
+
     fun plusMonthSelectedDate() {
         selectedDate = selectedDate.plusMonths(1)
     }
@@ -40,9 +58,11 @@ object CalendarHelper {
         return currentDate.month == selectedDate.month && currentDate.year == selectedDate.year
     }
 
-    fun selectedDateToCurrentDate(){
+    fun selectedDateToCurrentDate() {
         selectedDate = LocalDate.now()
     }
 
-    fun getTodayDay() : Int = LocalDate.now().dayOfMonth
+    fun getTodayDay(): Int = LocalDate.now().dayOfMonth
+
+
 }

@@ -10,18 +10,23 @@
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
-
     <application
+        android:name=".FitHealthApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".FitHealthApp"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FitHealth"
         tools:targetApi="31">
+        <activity
+            android:name=".View.Activitys.Meal.MainMealActivity"
+            android:exported="false" />
+        <activity
+            android:name=".View.Activitys.Meal.FoodInfoActivity"
+            android:exported="false" />
 
         <service
             android:name=".Model.Services.MessagesService"
@@ -31,7 +36,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
 
         <activity
             android:name=".View.Activitys.Social.MessageActivity"
@@ -52,6 +56,7 @@
             android:name=".View.Activitys.MainActivity"
             android:exported="false"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activitys.AccederAplicacion.RegisterActivity"
@@ -71,6 +76,7 @@
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

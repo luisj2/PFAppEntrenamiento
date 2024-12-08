@@ -3,15 +3,13 @@
 
 
     <item
-        android:id="@+id/itemBusquedaComidas"
-        android:icon="@android:drawable/ic_menu_search"
-        />
+        android:id="@+id/searchFoodFragment"
+        android:icon="@android:drawable/ic_menu_search" />
 
     <item
-        android:id="@+id/itemRegistroComidas"
+        android:id="@+id/registerFoodFragment"
         android:icon="@drawable/comidahoy" />
     <item
-        android:id="@+id/itemRegistroComidasGuardadas"
-
+        android:id="@+id/saveMealsFragment"
         android:icon="@drawable/guardarcomida" />
 </menu>

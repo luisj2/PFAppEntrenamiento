@@ -4,5 +4,4 @@ class DataUserRegister(
     val userName : String,
     val password : String,
     val email : String
-) {
-}
+)

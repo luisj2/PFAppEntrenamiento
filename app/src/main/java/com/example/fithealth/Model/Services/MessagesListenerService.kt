@@ -38,10 +38,5 @@ class MessagesListenerService(private val context: Context) : Service() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-    }
-
     override fun onBind(intent: Intent?): IBinder? = null
 }
