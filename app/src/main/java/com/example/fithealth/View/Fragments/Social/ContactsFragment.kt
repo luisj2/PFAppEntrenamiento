@@ -82,8 +82,8 @@ class ContactsFragment : Fragment() {
         binding.tvNoElementMessage.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

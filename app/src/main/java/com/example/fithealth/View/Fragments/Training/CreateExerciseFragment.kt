@@ -1,44 +1,30 @@
 package com.example.fithealth.View.Fragments.Training
 
-import android.Manifest
-import android.app.Activity
-import android.app.Dialog
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.Spinner
-import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
-import com.example.fithealth.Model.DataClass.Ejercicio
-import com.example.fithealth.Model.DataClass.TipoEjercicioIconos
-import com.example.fithealth.Model.Firebase.FirebaseHelper
-import com.example.fithealth.Model.Permissions.Permisos
-import com.example.fithealth.R
-import com.example.fithealth.View.SpinnerAdapters.AdapterSpinnerCustom
+import com.example.fithealth.databinding.FragmentCreateExerciseBinding
 
 class CreateExerciseFragment : Fragment() {
 
+    private var _binding : FragmentCreateExerciseBinding? = null
+    private val binding : FragmentCreateExerciseBinding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return  inflater.inflate(R.layout.fragment_crear_ejercicio, container, false)
+    ): View {
+        _binding = FragmentCreateExerciseBinding.inflate(inflater,container,false)
+
+        setupUI()
+
+        return  binding.root
+    }
+
+    private fun setupUI() {
+
     }
 
     /*
@@ -232,4 +218,9 @@ class CreateExerciseFragment : Fragment() {
     }
 
      */
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

@@ -134,10 +134,7 @@ class SearchUsersFragment : Fragment() {
         super.onDestroyView()
         binding.etSearchUsers.setText("")
         userFirestoreViewModel.clearSearchResults()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
         _binding = null
     }
+
 }

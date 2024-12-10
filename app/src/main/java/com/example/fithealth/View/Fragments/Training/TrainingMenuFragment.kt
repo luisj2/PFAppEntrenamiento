@@ -5,28 +5,54 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
-import com.example.fithealth.R
 import com.example.fithealth.View.OtherAdapters.ViewPagerAdapter
-import com.google.android.material.tabs.TabLayout
+import com.example.fithealth.databinding.FragmentTrainingMenuBinding
+import com.google.android.material.tabs.TabLayoutMediator
 
 class TrainingMenuFragment : Fragment() {
-    var tabLayout: TabLayout? = null
-    var viewPager: ViewPager? = null
-    var viewPagerAdapter: ViewPagerAdapter? = null
+
+    private var _binding: FragmentTrainingMenuBinding? = null
+    private val binding: FragmentTrainingMenuBinding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
-        /*
-        viewPagerAdapter = ViewPagerAdapter(childFragmentManager)
-        viewPagerAdapter!!.addFragment(CreateExerciseFragment(), "Crear Ejercicio")
-        //viewPagerAdapter.addFragment(new DialogFragment(),"Comidas");
-        viewPager!!.adapter = viewPagerAdapter
-        tabLayout!!.setupWithViewPager(viewPager)
+        _binding = FragmentTrainingMenuBinding.inflate(inflater)
 
-         */
-        return inflater.inflate(R.layout.fragment_menu_entrenamiento, container, false)
+        setupUI()
+
+        return binding.root
+    }
+
+    private fun setupUI() {
+        setupNavegation()
+    }
+
+    private fun setupNavegation() {
+        setupViewPager()
+        setupTabLayout()
+    }
+
+    private fun setupViewPager() {
+        val fragmentList = listOf(TrainingFragment(), CreateExerciseFragment())
+        binding.apply {
+            viewPagerTraining.adapter = ViewPagerAdapter(requireActivity(), fragmentList)
+        }
+    }
+
+    private fun setupTabLayout() {
+        val tabTitles = listOf("Entrenamiento", "Crear Ejercicio")
+        binding.apply {
+            TabLayoutMediator(tabLayoutTraining, viewPagerTraining) { tab, position ->
+                tab.text = tabTitles.getOrNull(position) ?: "Tab ${position + 1}"
+            }.attach()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

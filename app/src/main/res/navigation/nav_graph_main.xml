@@ -16,9 +16,9 @@
         tools:layout="@layout/fragment_dieta" />
     <fragment
         android:id="@+id/trainingFragment"
-        android:name="com.example.fithealth.View.Fragments.Training.TrainingFragment"
+        android:name="com.example.fithealth.View.Fragments.Training.TrainingMenuFragment"
         android:label="fragment_entrenamiento"
-        tools:layout="@layout/fragment_entrenamiento" />
+        tools:layout="@layout/fragment_training_menu" />
     <fragment
         android:id="@+id/socialFragment"
         android:name="com.example.fithealth.View.Fragments.Social.SearchUsersFragment"

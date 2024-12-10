@@ -120,4 +120,8 @@ class SearchFoodFragment : Fragment() {
         fatSecretViewModel.searchFood(foodName = searchText)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

@@ -5,17 +5,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.fithealth.R
+import com.example.fithealth.databinding.FragmentTrainingBinding
 
 class TrainingFragment : Fragment() {
 
+    private var _binding: FragmentTrainingBinding? = null
+    private val binding: FragmentTrainingBinding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+        _binding = FragmentTrainingBinding.inflate(inflater, container, false)
 
+        setupUI()
 
-        return inflater.inflate(R.layout.fragment_entrenamiento, container, false)
+        return binding.root
+    }
+
+    private fun setupUI() {
+
     }
 
     //Inicilizamos y le ponemos el adapter al RecyclerView inicializado antes
@@ -34,4 +42,9 @@ class TrainingFragment : Fragment() {
         }
     }
     */
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
