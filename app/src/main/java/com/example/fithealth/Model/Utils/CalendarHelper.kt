@@ -64,8 +64,6 @@ object CalendarHelper {
         selectedDate = LocalDate.now()
     }
 
-    //fun getSelectedDateMonth() :
-
     fun getTodayDay(): Int = LocalDate.now().dayOfMonth
 
 
