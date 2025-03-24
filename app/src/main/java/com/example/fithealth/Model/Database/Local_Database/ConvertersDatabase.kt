@@ -2,6 +2,7 @@ package com.example.fithealth.Model.Database
 
 import androidx.room.TypeConverter
 import com.example.fithealth.Model.DataClass.FoodApiResources.FoodNameSearch.Food
+import com.example.fithealth.Model.DataClass.Routine
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.time.LocalDate
@@ -43,6 +44,19 @@ class ConvertersDatabase {
     fun toFoodList(foodString: String?): List<Food>? {
         return foodString?.let {
             val type = object : TypeToken<List<Food>>() {}.type
+            gson.fromJson(it, type)
+        }
+    }
+
+    @TypeConverter
+    fun fromRoutineList(routines: List<Routine?>?): String? {
+        return routines?.let { gson.toJson(it) }
+    }
+
+    @TypeConverter
+    fun toRoutineList(routinesString: String?): List<Routine?>? {
+        return routinesString?.let {
+            val type = object : TypeToken<List<Routine>>() {}.type
             gson.fromJson(it, type)
         }
     }

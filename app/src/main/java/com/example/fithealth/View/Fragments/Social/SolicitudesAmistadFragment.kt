@@ -9,10 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fithealth.Model.DataClass.UserSearch
-import com.example.fithealth.Model.Utils.ExtensionUtils.dissmissLoadingScreen
 import com.example.fithealth.Model.Utils.ExtensionUtils.isStableConnection
-import com.example.fithealth.Model.Utils.ExtensionUtils.showLoadingScreen
 import com.example.fithealth.Model.Utils.ExtensionUtils.toast
+import com.example.fithealth.Model.Utils.ExtensionUtils.toggleLoadingScreen
 import com.example.fithealth.View.ReyclerAdapters.Social.MessageAdapter.FriendRequest.FriendRequestAdapter
 import com.example.fithealth.ViewModel.Auth.Firestore.User.UserFirestoreViewModel
 import com.example.fithealth.ViewModel.Auth.Firestore.User.UserFirestoreViewModelBuilder
@@ -119,8 +118,7 @@ class SolicitudesAmistadFragment : Fragment() {
             }
 
             isLoading.observe(viewLifecycleOwner) { isLoading ->
-                if (isLoading) requireActivity().showLoadingScreen()
-                else requireActivity().dissmissLoadingScreen()
+                toggleLoadingScreen(isLoading)
             }
 
             removeRequestStatus.observe(viewLifecycleOwner) { removeRequestStatus ->

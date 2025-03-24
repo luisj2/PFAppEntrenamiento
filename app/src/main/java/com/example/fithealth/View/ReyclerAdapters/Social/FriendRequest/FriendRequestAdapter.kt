@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fithealth.Model.DataClass.UserSearch
-import com.example.fithealth.Model.Utils.DiffUtilsSearchUser
+import com.example.fithealth.View.ReyclerAdapters.DiffUtils.DiffUtilsSearchUser
 import com.example.fithealth.databinding.ItemUserRequestBinding
 
 class FriendRequestAdapter(

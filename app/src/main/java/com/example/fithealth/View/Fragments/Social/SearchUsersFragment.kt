@@ -9,9 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fithealth.Model.DataClass.UserSearch
-import com.example.fithealth.Model.Utils.ExtensionUtils.dissmissLoadingScreen
-import com.example.fithealth.Model.Utils.ExtensionUtils.showLoadingScreen
 import com.example.fithealth.Model.Utils.ExtensionUtils.toast
+import com.example.fithealth.Model.Utils.ExtensionUtils.toggleLoadingScreen
 import com.example.fithealth.View.ReyclerAdapters.Social.MessageAdapter.BusquedaSocial.UserSearchAdapter
 import com.example.fithealth.ViewModel.Auth.Firestore.User.UserFirestoreViewModel
 import com.example.fithealth.ViewModel.Auth.Firestore.User.UserFirestoreViewModelBuilder
@@ -80,7 +79,7 @@ class SearchUsersFragment : Fragment() {
                 else toast("Error al enviar la solicitud")
             }
             isLoading.observe(viewLifecycleOwner) { isLoading ->
-                handleLoadingScreen(isLoading)
+                toggleLoadingScreen(isLoading)
             }
         }
     }
@@ -89,7 +88,7 @@ class SearchUsersFragment : Fragment() {
         userFirestoreViewModel.apply {
 
             isLoading.observe(viewLifecycleOwner) { isLoading ->
-                handleLoadingScreen(isLoading)
+                toggleLoadingScreen(isLoading)
             }
 
 
@@ -107,10 +106,7 @@ class SearchUsersFragment : Fragment() {
         }
     }
 
-    private fun handleLoadingScreen(loading: Boolean) {
-        if (loading) requireActivity().showLoadingScreen()
-        else requireActivity().dissmissLoadingScreen()
-    }
+
 
     private fun updateSearchUserList(userList: List<UserSearch>) {
         val adapter = binding.rvListaUsuarios.adapter as UserSearchAdapter

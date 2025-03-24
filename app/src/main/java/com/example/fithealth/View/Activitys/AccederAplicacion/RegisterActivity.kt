@@ -4,12 +4,11 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fithealth.Model.DataClass.AuthUser
-import com.example.fithealth.Model.Utils.ExtensionUtils.dissmissLoadingScreen
 import com.example.fithealth.Model.Utils.ExtensionUtils.isStableConnection
 import com.example.fithealth.Model.Utils.ExtensionUtils.isValidEmailCredentials
 import com.example.fithealth.Model.Utils.ExtensionUtils.moveToActivity
-import com.example.fithealth.Model.Utils.ExtensionUtils.showLoadingScreen
 import com.example.fithealth.Model.Utils.ExtensionUtils.toast
+import com.example.fithealth.Model.Utils.ExtensionUtils.toggleLoadingScreen
 import com.example.fithealth.View.Activitys.AccederAplicacion.LoginActivity
 import com.example.fithealth.ViewModel.Auth.AuthViewModel
 import com.example.fithealth.ViewModel.Auth.AuthViewModelBuilder
@@ -60,7 +59,7 @@ class RegisterActivity : AppCompatActivity() {
             }
 
             isLoading.observe(this@RegisterActivity) { isLoading ->
-                if (isLoading) showLoadingScreen() else dissmissLoadingScreen()
+                toggleLoadingScreen(isLoading)
             }
         }
     }

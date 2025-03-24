@@ -1,5 +1,7 @@
 package com.example.fithealth.Model.Utils.ExtensionUtils
 
+import android.widget.EditText
+import androidx.core.widget.doOnTextChanged
 import com.example.fithealth.Activitys.AccederAplicacion.RegisterActivity
 import com.example.fithealth.R
 import com.example.fithealth.View.Activitys.AccederAplicacion.LoginActivity
@@ -22,10 +24,16 @@ fun LoginActivity.isValidEmailCredentials(email: String): Boolean {
     return matcher.matches()
 }
 
-fun TextInputLayout.setRequiredHelperText(){
+fun TextInputLayout.setRequiredHelperText() {
     this.helperText = context.getString(R.string.requerido)
 }
 
-fun TextInputLayout.clearHelperText(){
+fun TextInputLayout.clearHelperText() {
     this.helperText = null
+}
+
+fun EditText.onTextChanged(action: (String) -> Unit) {
+    this.doOnTextChanged { text, _, _, _ ->
+        action(text?.toString().orEmpty())
+    }
 }

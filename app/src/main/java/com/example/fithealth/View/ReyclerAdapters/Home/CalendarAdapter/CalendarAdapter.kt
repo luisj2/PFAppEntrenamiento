@@ -10,7 +10,6 @@ class CalendarAdapter :
     RecyclerView.Adapter<CalendarViewHolder>() {
 
     private val daysList = CalendarHelper.getDaysInMonthArray()
-    private val isCurrentMonth = CalendarHelper.isCurrentMonth()
     private val todayDay = CalendarHelper.getTodayDay().toString()
 
 
@@ -25,10 +24,9 @@ class CalendarAdapter :
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
         val dayItem = daysList[position]
         holder.bind(dayItem,isToday(dayItem))
-
     }
 
     private fun isToday(day: String): Boolean =
-        isCurrentMonth && day == todayDay
+        CalendarHelper.isCurrentMonth() && day == todayDay
 
 }

@@ -22,6 +22,16 @@ val fragmentsIdByNameMap: HashMap<String, Int> = hashMapOf(
     fragmentsNameMainActivity[3] to R.id.socialFragment
 )
 
+//Tipos ejercicios
+val exerciseTypes = listOf("Resistencia", "Fuerza", "Hipertrofia", "Velocidad")
+
+val exercisesTypesImagesMap = hashMapOf(
+    exerciseTypes[0] to R.drawable.ic_corazon,
+    exerciseTypes[1] to R.drawable.ic_fuerza,
+    exerciseTypes[2] to R.drawable.ic_hipertrofia,
+    exerciseTypes[3] to R.drawable.ic_velocidad
+)
+
 //tipos de comidas
 val mealTypes: Array<String> = arrayOf("breakfast", "lunch", "snack", "dinner")
 

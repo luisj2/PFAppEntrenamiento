@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".View.Fragments.Home.DayDescriptionFragment"
+    android:orientation="vertical">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/fatherLinear"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/linearTrainingTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvTrainingTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:text="Entrenamiento"
+                    android:textAlignment="center"/>
+
+                <Button
+                    android:id="@+id/btnAddRoutineInDay"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="+"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvTraining"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearTrainingTitle"/>
+
+            <TextView
+                android:id="@+id/tvNoTrainingItems"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:text="No hay elementos..."
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/rvTraining"
+                app:layout_constraintStart_toStartOf="@+id/rvTraining"
+                app:layout_constraintTop_toTopOf="@id/rvTraining"
+                app:layout_constraintBottom_toBottomOf="@id/rvTraining"/>
+
+            <LinearLayout
+                android:id="@+id/linearMealsTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rvTraining">
+
+                <TextView
+                    android:id="@+id/tvMealTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:textSize="24sp"
+                    android:layout_marginTop="8dp"
+                    android:textStyle="bold"
+                    android:text="Comidas"
+                    android:textAlignment="center" />
+
+                <Button
+                    android:id="@+id/btnAddMealsInDay"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:text="+"/>
+
+            </LinearLayout>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvMeals"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/linearMealsTitle"/>
+
+            <TextView
+                android:id="@+id/tvNoMealItems"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:text="No hay elementos..."
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/rvMeals"
+                app:layout_constraintStart_toStartOf="@+id/rvMeals"
+                app:layout_constraintTop_toTopOf="@id/rvMeals"
+                app:layout_constraintBottom_toBottomOf="@id/rvMeals"/>
+
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

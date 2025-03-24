@@ -8,9 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fithealth.Model.DataClass.FoodApiResources.FoodNameSearch.Food
-import com.example.fithealth.Model.Utils.ExtensionUtils.dissmissLoadingScreen
-import com.example.fithealth.Model.Utils.ExtensionUtils.showLoadingScreen
 import com.example.fithealth.Model.Utils.ExtensionUtils.toast
+import com.example.fithealth.Model.Utils.ExtensionUtils.toggleLoadingScreen
 import com.example.fithealth.View.ReyclerAdapters.Meal.SearchFood.SearchFoodAdapter
 import com.example.fithealth.ViewModel.FoodApi.FatSecretViewModel
 import com.example.fithealth.ViewModel.FoodApi.FatSecretViewModelBuilder
@@ -87,8 +86,7 @@ class SearchFoodFragment : Fragment() {
             }
 
             loading.observe(viewLifecycleOwner) { loading ->
-                if (loading) activity?.showLoadingScreen()
-                else activity?.dissmissLoadingScreen()
+                toggleLoadingScreen(loading)
             }
 
         }

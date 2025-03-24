@@ -10,7 +10,7 @@ import com.google.firebase.storage.StorageReference
 class FirebaseHelper(var context: Context) {
 
     private var storage: StorageReference = FirebaseStorage.getInstance().reference
-    private val COLECCION_EJERCICIOS = "Ejercicio"
+    private val COLECCION_EJERCICIOS = "Exercise"
     private val COLECCION_RUTINAS = "Rutinas"
     private val COLECCION_USUARIOS = "usuarios"
     private val fs: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -69,7 +69,7 @@ class FirebaseHelper(var context: Context) {
     }
 
     //añadimos el ejercicio pasado por parametros a la coleccion de ejercicios de firebase firestore
-    fun aniadirEjercicioFirestore(ejercicio: Ejercicio, callback: DevolverEjercicio) {
+    fun aniadirEjercicioFirestore(ejercicio: Exercise, callback: DevolverEjercicio) {
         val datosEjercicio = rellenarMapConEjercicio(ejercicio)
         fs.collection(COLECCION_EJERCICIOS).add(datosEjercicio)
             .addOnSuccessListener(object : OnSuccessListener<DocumentReference?> {
@@ -92,7 +92,7 @@ class FirebaseHelper(var context: Context) {
     }
 
     //rellenamos un hashmap con un obn
-    private fun rellenarMapConEjercicio(ejercicio: Ejercicio): Map<String, Any> {
+    private fun rellenarMapConEjercicio(ejercicio: Exercise): Map<String, Any> {
         val datos: MutableMap<String, Any> = HashMap()
         datos["id"] = ejercicio.id
         datos["nombreEjercicio"] = ejercicio.nombreEjercicio

@@ -13,8 +13,10 @@ object CalendarHelper {
         val monthLength = yearMonth.lengthOfMonth()
         val monthStartWeekday = yearMonth.atDay(1).dayOfWeek.value
 
-        // Tamaño total calendario(6 semanas * 7 días)
-        val totalListLength = 6 * 7
+        val calendarMonthWeeksRows = 6
+        val weekDays = 7
+
+        val totalListLength = calendarMonthWeeksRows * weekDays
 
         return List<String>(totalListLength) { i ->
             val dayOfMonth = (i + 1) - monthStartWeekday
@@ -61,6 +63,8 @@ object CalendarHelper {
     fun selectedDateToCurrentDate() {
         selectedDate = LocalDate.now()
     }
+
+    //fun getSelectedDateMonth() :
 
     fun getTodayDay(): Int = LocalDate.now().dayOfMonth
 

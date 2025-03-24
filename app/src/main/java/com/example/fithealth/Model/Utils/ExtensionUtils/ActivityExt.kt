@@ -24,7 +24,13 @@ fun Activity.dialog(title: String, message: String) {
     DialogManager.showDialog(this, title, message)
 }
 
-fun Activity.showLoadingScreen() {
+fun Activity.moveToActivityWithResults() {
+    setResult(Activity.RESULT_OK, Intent())
+    finish()
+}
+
+
+private fun Activity.showLoadingScreen() {
 
     if (loadingDialog == null || !loadingDialog!!.isShowing) {
         loadingDialog = Dialog(this).apply {
@@ -42,7 +48,12 @@ fun Activity.showLoadingScreen() {
 
 }
 
-fun Activity.dissmissLoadingScreen() {
+fun Activity.toggleLoadingScreen(loadingStatus: Boolean) {
+    if (loadingStatus) showLoadingScreen()
+    else dissmissLoadingScreen()
+}
+
+private fun Activity.dissmissLoadingScreen() {
     loadingDialog?.let { dialog ->
         if (dialog.isShowing) {
             dialog.dismiss()

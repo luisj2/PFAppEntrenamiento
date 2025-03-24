@@ -13,6 +13,8 @@ import com.example.fithealth.View.ReyclerAdapters.Home.CalendarAdapter.CalendarA
 import com.example.fithealth.databinding.FragmentHomeBinding
 import com.google.firebase.auth.FirebaseAuth
 
+//hacer que los botones de añadir una rutina y de comida te lleven a las respectivas pantallas
+//Hacer que segun el tipo de entrenamiento el dia tenga un color o un contorno
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
@@ -32,6 +34,7 @@ class HomeFragment : Fragment() {
     private fun setupUI() {
         setupRecyclers()
         setupOnclicks()
+        setupContainerView()
         updateMonthView()
         goCurrentMonth()
     }
@@ -91,4 +94,13 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    private fun setupContainerView() {
+        val containerViewFragment = DayDescriptionFragment()
+        this.childFragmentManager
+            .beginTransaction()
+            .replace(binding.containerDayDescription.id,containerViewFragment)
+            .commit()
+    }
+
 }

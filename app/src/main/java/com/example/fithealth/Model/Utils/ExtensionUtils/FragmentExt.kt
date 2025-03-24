@@ -22,6 +22,10 @@ fun Fragment.moveToActivity(targetClass: Class<*>, bundle: Bundle = bundleOf()) 
     startActivity(Intent(requireContext(), targetClass).putExtras(bundle))
 }
 
+fun Fragment.toggleLoadingScreen (loadingStatus : Boolean){
+    requireActivity().toggleLoadingScreen(loadingStatus)
+}
+
 fun Fragment.moveToActivityWithResult(
     tarjetActivity: Class<*>,
     activityResultLauncher: ActivityResultLauncher<Intent>,

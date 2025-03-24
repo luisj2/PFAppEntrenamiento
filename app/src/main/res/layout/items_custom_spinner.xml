@@ -6,13 +6,13 @@
     android:orientation="horizontal">
 
     <ImageView
-        android:id="@+id/ivImagenTipoEjercicio"
+        android:id="@+id/ivTypeExercise"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="center_vertical"/>
 
     <TextView
-        android:id="@+id/tvNombreTipoEjercicio"
+        android:id="@+id/tvExerciseName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="30sp"

@@ -36,14 +36,14 @@ class TrainingMenuFragment : Fragment() {
     }
 
     private fun setupViewPager() {
-        val fragmentList = listOf(TrainingFragment(), CreateExerciseFragment())
+        val fragmentList = listOf(RoutinesFragment(), ExerciseFragment())
         binding.apply {
             viewPagerTraining.adapter = ViewPagerAdapter(requireActivity(), fragmentList)
         }
     }
 
     private fun setupTabLayout() {
-        val tabTitles = listOf("Entrenamiento", "Crear Ejercicio")
+        val tabTitles = listOf("Rutinas", "Ejercicios")
         binding.apply {
             TabLayoutMediator(tabLayoutTraining, viewPagerTraining) { tab, position ->
                 tab.text = tabTitles.getOrNull(position) ?: "Tab ${position + 1}"

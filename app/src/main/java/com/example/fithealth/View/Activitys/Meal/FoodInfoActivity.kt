@@ -7,8 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fithealth.Model.DataClass.FoodApiResources.FoodIdSearch.Food
 import com.example.fithealth.Model.DataClass.FoodApiResources.FoodIdSearch.Serving
-import com.example.fithealth.Model.Utils.ExtensionUtils.dissmissLoadingScreen
-import com.example.fithealth.Model.Utils.ExtensionUtils.showLoadingScreen
+import com.example.fithealth.Model.Utils.ExtensionUtils.toggleLoadingScreen
 import com.example.fithealth.ViewModel.FoodApi.FatSecretViewModel
 import com.example.fithealth.ViewModel.FoodApi.FatSecretViewModelBuilder
 import com.example.fithealth.databinding.ActivityFoodInfoBinding
@@ -79,8 +78,7 @@ class FoodInfoActivity : AppCompatActivity() {
     private fun setupFatSecretObservers() {
         fatSecretViewModel.apply {
             loading.observe(this@FoodInfoActivity) { loading ->
-                if (loading) showLoadingScreen()
-                else dissmissLoadingScreen()
+                toggleLoadingScreen(loading)
             }
 
             foodResult.observe(this@FoodInfoActivity) { foodById ->

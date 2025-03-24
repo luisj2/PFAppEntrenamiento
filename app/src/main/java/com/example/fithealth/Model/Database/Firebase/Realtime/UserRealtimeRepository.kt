@@ -241,7 +241,7 @@ class UserRealtimeRepository(private val realtime: FirebaseDatabase) : UserRealt
             reference.addValueEventListener(listener)
 
             continuation.invokeOnCancellation {
-                reference.removeEventListener(listener) // Elimina el listener si la corutina es cancelada
+                reference.removeEventListener(listener)
             }
         }
     }
